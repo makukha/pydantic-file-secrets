@@ -1,0 +1,20 @@
+Brewfile.lock.json
+dist/
+*.egg-info/
+.idea/
+.pdm-build/
+.pdm-python
+__pycache__/
+.task/
+tmp/
+.tox/
+.venv/
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
