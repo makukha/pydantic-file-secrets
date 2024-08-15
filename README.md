@@ -1,7 +1,7 @@
 # pydantic-file-secrets 📁🔑
 > Use file secrets in nested models of Pydantic Settings.
 
-[![license](https://img.shields.io/github/license/makukha/pydantic-file-secrets.svg)](https://github.com/makukha/pydantic-file-secrets/blob/main/LICENSE)
+![GitHub License](https://img.shields.io/github/license/makukha/pydantic-file-secrets)
 [![Tests](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/0.1.0a1/docs/badge/tests.svg)](https://github.com/makukha/pydantic-file-secrets)
 [![Coverage](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/0.1.0a1/docs/badge/coverage.svg)](https://github.com/makukha/pydantic-file-secrets)
 [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v1.json)](https://github.com/astral-sh/ruff)
@@ -19,8 +19,8 @@ This package is inspired by and based on discussions in [pydantic-settings issue
 * Use secret file source in nested settings models
 * Drop-in replacement of standard `SecretsSettingsSource`
 * Plain or nested directory layout: `/run/secrets/dir__key` or `/run/secrets/dir/key`
-* Respects `env_prefix`, `env_nested_delimiter` and other [config options](#configuration-options)
-* Has `secrets_prefix`, `secrets_nested_delimiter`, [etc.](#configuration-options) to configure secrets and env vars separately
+* Respects `env_prefix`, `env_nested_delimiter` and other [config options](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options)
+* Has `secrets_prefix`, `secrets_nested_delimiter`, [etc.](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options) to configure secrets and env vars separately
 * Pure Python thin wrapper over standard `EnvSettingsSource`
 * No third party dependencies except `pydantic-settings`
 * 100% test coverage
@@ -47,7 +47,7 @@ class Settings(BaseSettings):
     )
 ```
 
-Pydantic Settings has a corresponding data source, [`SecretsSettingsSource`](https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.SecretsSettingsSource), but it does not load secrets in nested models. For methods that ***do not*** work in original Pydantic Settings, see [tests/test_pydantic_motivation.py]().
+Pydantic Settings has a corresponding data source, [`SecretsSettingsSource`](https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.SecretsSettingsSource), but it does not load secrets in nested models. For methods that ***do not*** work in original Pydantic Settings, see [test_pydantic_motivation.py](https://github.com/makukha/pydantic-file-secrets/blob/main/tests/test_pydantic_motivation.py).
 
 
 ## Solution
