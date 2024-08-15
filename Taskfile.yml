@@ -30,6 +30,7 @@ tasks:
       - task: dep:lock
       - pdm install --check --dev
 
+  # dependencies lock in PDM is slow, run only when pyproject.toml changes
   dep:lock:
     internal: true
     sources:
@@ -52,7 +53,7 @@ tasks:
       - tox run-parallel --parallel-live
 
   test:pdb:
-    desc: Run tests and open debugger if errors found
+    desc: Run tests and open debugger on errors.
     deps: [install]
     cmds:
       - pdm run pytest --pdb {{.CLI_ARGS}}

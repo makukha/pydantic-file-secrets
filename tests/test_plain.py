@@ -13,7 +13,7 @@ def test_delimited_name(settings_model, monkeypatch, secrets_dir):
     )
     conf = Settings()
     assert conf.app_key == 'secret1'
-    assert conf.db.password == 'secret2'
+    assert conf.db.password == 'secret2'  # noqa: S105
 
 
 def test_secrets_off(settings_model, monkeypatch, secrets_dir):

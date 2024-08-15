@@ -10,7 +10,7 @@ from pydantic_settings.utils import path_type_label
 from .__version__ import __version__
 
 
-__all__ = ['FileSecretsSettingsSource']
+__all__ = ['__version__', 'FileSecretsSettingsSource']
 
 
 type SecretsDirMissing = Literal['ok', 'warn', 'error']
