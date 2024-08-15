@@ -4,11 +4,12 @@
 [![license](https://img.shields.io/github/license/makukha/pydantic-file-secrets.svg)](https://github.com/makukha/pydantic-file-secrets/blob/main/LICENSE)
 [![Tests](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/0.1.0a1/docs/badge/tests.svg)](https://github.com/makukha/pydantic-file-secrets)
 [![Coverage](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/0.1.0a1/docs/badge/coverage.svg)](https://github.com/makukha/pydantic-file-secrets)
-[![types - Mypy](https://img.shields.io/badge/types-Mypy-green.svg)](https://github.com/python/mypy)
 [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v1.json)](https://github.com/astral-sh/ruff)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) \
 [![pypi](https://img.shields.io/pypi/v/pydantic-file-secrets.svg#0.1.0a1)](https://pypi.python.org/pypi/pydantic-file-secrets)
 [![versions](https://img.shields.io/pypi/pyversions/pydantic-file-secrets.svg)](https://pypi.org/project/pydantic-file-secrets)
+[![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://pydantic.dev)
+
 
 This package is inspired by and based on discussions in [pydantic-settings issue #154](https://github.com/pydantic/pydantic-settings/issues/154).
 

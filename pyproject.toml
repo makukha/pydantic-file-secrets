@@ -6,11 +6,16 @@ build-backend = "pdm.backend"
 name = "pydantic-file-secrets"
 dynamic = ["version"]
 description = "Use file secrets in nested models of Pydantic Settings."
-authors = [{name = "Michael Makukha", email = "m.makukha@gmail.com"}]
+authors = [
+    {name = "Michael Makukha", email = "m.makukha@gmail.com"},
+]
 readme = "README.md"
 license = {text = "MIT"}
 keywords = [
-    # todo
+    "python", "python3",
+    "pydantic", "pydantic-v2", "pydantic-settings",
+    "settings", "configuration", "config", "validation",
+    "secrets", "docker-secret", "docker", "file-secrets",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -39,9 +44,9 @@ dependencies = [
 
 [project.urls]
 Documentation = "https://github.com/makukha/pydantic-file-secrets#readme"
+Changelog = "https://github.com/makukha/pydantic-file-secrets/releases"
 Issues = "https://github.com/makukha/pydantic-file-secrets/issues"
 Source = "https://github.com/makukha/pydantic-file-secrets"
-Changelog = "https://github.com/makukha/pydantic-file-secrets/releases"
 
 
 # tools
