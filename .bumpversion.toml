@@ -1,0 +1,8 @@
+[tool.bumpversion]
+current_version = "0.1.0a1"
+allow_dirty = true
+files = [
+  {filename = "src/pydantic_file_secrets/__version__.py"},
+  {filename = "pyproject.toml"},
+  {filename = "README.md"},
+]

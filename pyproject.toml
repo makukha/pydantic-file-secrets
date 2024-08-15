@@ -1,0 +1,69 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project]
+name = "pydantic-file-secrets"
+dynamic = ["version"]
+description = "Use file secrets in nested models of Pydantic Settings."
+authors = [
+    {name = "Michael Makukha", email = "m.makukha@gmail.com"},
+]
+readme = "README.md"
+license = {text = "MIT"}
+keywords = [
+    "python", "python3",
+    "pydantic", "pydantic-v2", "pydantic-settings",
+    "settings", "configuration", "config", "validation",
+    "secrets", "docker-secret", "docker", "file-secrets",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Pydantic",
+    "Framework :: Pydantic :: 2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+    # see https://pypi.org/classifiers/
+]
+requires-python = ">=3.8"
+dependencies = [
+    "pydantic-settings>=2.0",
+]
+
+[project.urls]
+Documentation = "https://github.com/makukha/pydantic-file-secrets#readme"
+Changelog = "https://github.com/makukha/pydantic-file-secrets/releases"
+Issues = "https://github.com/makukha/pydantic-file-secrets/issues"
+Source = "https://github.com/makukha/pydantic-file-secrets"
+
+
+# tools
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.version]
+source = "file"
+path = "src/pydantic_file_secrets/__version__.py"
+
+[tool.pdm.dev-dependencies]
+build = [
+    "bump-my-version; python_version>='3.12'",
+    "genbadge[coverage,tests]; python_version>='3.12'",
+]
+test = [
+    "pytest; python_version>='3.12'",
+    "pytest-cov; python_version>='3.12'",
+]

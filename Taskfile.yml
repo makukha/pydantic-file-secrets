@@ -1,0 +1,80 @@
+version: '3'
+
+vars:
+  GITHUB_REPO: makukha/pydantic-file-secrets
+
+tasks:
+
+  init:
+    desc: Initialize dev environment.
+    cmds:
+      - cd .dev && brew bundle
+      - task: init:python
+      - pyenv install --skip-existing $(pyenv local)
+      - pdm venv create $(pyenv prefix $(pyenv local))
+
+  init:python:
+    internal: true
+    sources:
+      - tox.ini
+    vars:
+      PYTHON_VERSIONS:
+        sh: tox --listenvs | sed -e 's/^py\([23]\)\.\{0,1\}\(.*\)-.*/\1.\2/' | sort -mu | tr '\n' ' '
+    cmds:
+      - cmd: pyenv install --skip-existing {{.ITEM}}
+        for: {var: PYTHON_VERSIONS}
+
+  install:
+    desc: Install dev python environment.
+    cmds:
+      - task: dep:lock
+      - pdm install --check --dev
+
+  # dependencies lock in PDM is slow, run only when pyproject.toml changes
+  dep:lock:
+    internal: true
+    sources:
+      - pyproject.toml
+    generates:
+      - pdm.lock
+    cmds:
+      - pdm lock
+
+  lint:
+    desc: Run linters and code formatters.
+    cmds:
+      - ruff check
+      - ruff format --check
+
+  test:
+    desc: Run tests.
+    deps: [install]
+    cmds:
+      - tox run-parallel --parallel-live
+
+  test:pdb:
+    desc: Run tests and open debugger on errors.
+    deps: [install]
+    cmds:
+      - pdm run pytest --pdb {{.CLI_ARGS}}
+
+  version:
+    desc: Bump project version. Use task version -- patch|minor|major|...
+    cmds:
+      - pdm run bump-my-version bump {{.CLI_ARGS}}
+
+  publish:
+    desc: Publish package on PyPi.
+    preconditions:
+      - test $(git rev-parse --abbrev-ref HEAD) = main
+    cmds:
+      - pdm publish
+
+  scorecard:
+    desc: Update security scorecard
+    vars:
+      GITHUB_TOKEN: {sh: keyring get token.github.caseutil scorecard}
+    env:
+      GITHUB_TOKEN: '{{.GITHUB_TOKEN}}'
+    cmds:
+      - scorecard --repo={{.GITHUB_REPO}}
