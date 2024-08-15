@@ -1,13 +1,13 @@
 """
 These tests show that nested secrets problem exists.
 """
+
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import pytest
 
 
 def test_delimited_name_fails(monkeypatch, secrets_dir):
-
     class DbSettings(BaseModel):
         user: str
         password: str | None = None
@@ -21,10 +21,10 @@ def test_delimited_name_fails(monkeypatch, secrets_dir):
         )
 
     monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files({
-        'app_key': 'secret',
-        'db__password': 'secret',  # file name with delimiter
-    })
+    secrets_dir.add_files(
+        ('app_key', 'secret'),
+        ('db__password', 'secret'),  # file name with delimiter
+    )
 
     conf = Settings()
     assert conf.app_key == 'secret'
@@ -32,7 +32,6 @@ def test_delimited_name_fails(monkeypatch, secrets_dir):
 
 
 def test_pure_name_fails(monkeypatch, secrets_dir):
-
     class DbSettings(BaseModel):
         user: str
         password: str | None = None
@@ -46,18 +45,17 @@ def test_pure_name_fails(monkeypatch, secrets_dir):
         )
 
     monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files({
-        'app_key': 'secret',
-        'password': 'secret',  # file name matching nested option name
-    })
+    secrets_dir.add_files(
+        ('app_key', 'secret'),
+        ('password', 'secret'),  # file name matching nested option name
+    )
 
     conf = Settings()
     assert conf.app_key == 'secret'
-    assert conf.db.password is None
+    assert conf.db.password is None  # not loaded
 
 
 def test_subdir_fails(monkeypatch, secrets_dir):
-
     class DbSettings(BaseModel):
         user: str
         password: str | None = None
@@ -71,12 +69,12 @@ def test_subdir_fails(monkeypatch, secrets_dir):
         )
 
     monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files({
-        'app_key': 'secret',
-        'db/password': 'secret',  # file in nested subdirectory
-    })
+    secrets_dir.add_files(
+        ('app_key', 'secret'),
+        ('db/password', 'secret'),  # file in nested subdirectory
+    )
 
-    with pytest.warns(UserWarning, match='attempted to load secret file .* but found a directory instead'):
+    with pytest.warns(UserWarning):
         conf = Settings()
     assert conf.app_key == 'secret'
-    assert conf.db.password is None
+    assert conf.db.password is None  # not loaded

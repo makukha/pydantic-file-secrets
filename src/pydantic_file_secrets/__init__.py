@@ -28,7 +28,6 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         secrets_nested_delimiter: str | None = None,
         secrets_nested_subdir: bool | None = None,
     ) -> None:
-
         # config options
         conf = settings_cls.model_config
         self.secrets_dir: str | None = first_not_none(
@@ -43,7 +42,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         self.secrets_dir_max_size: int = first_not_none(
             secrets_dir_max_size,
             conf.get('secrets_dir_max_size'),
-            16 * 2 ** 20,  # 8 MiB seems to be a reasonable default
+            16 * 2**20,  # 8 MiB seems to be a reasonable default
         )
         self.case_sensitive: bool = first_not_none(
             secrets_case_sensitive,
@@ -90,19 +89,29 @@ class FileSecretsSettingsSource(EnvSettingsSource):
                     case 'warn':
                         warnings.warn(f'directory "{self.secrets_path}" does not exist')
                     case 'error':
-                        raise SettingsError(f'directory "{self.secrets_path}" does not exist')
+                        raise SettingsError(
+                            f'directory "{self.secrets_path}" does not exist'
+                        )
                     case _:
-                        raise SettingsError(f'invalid secrets_dir_missing value: {self.secrets_dir_missing}')
+                        raise SettingsError(
+                            f'invalid secrets_dir_missing value: '
+                            f'{self.secrets_dir_missing}'
+                        )
             else:
                 if not self.secrets_path.is_dir():
-                    raise SettingsError(f'secrets_dir must reference a directory, not a {path_type_label(self.secrets_path)}')
+                    raise SettingsError(
+                        'secrets_dir must reference a directory, '
+                        f'not a {path_type_label(self.secrets_path)}'
+                    )
                 secrets_dir_size = sum(
                     f.stat().st_size
                     for f in self.secrets_path.glob('**/*')
                     if f.is_file()
                 )
                 if secrets_dir_size > self.secrets_dir_max_size:
-                    raise SettingsError(f'secrets_dir size is above {self.secrets_dir_max_size} bytes')
+                    raise SettingsError(
+                        f'secrets_dir size is above {self.secrets_dir_max_size} bytes'
+                    )
 
         # construct parent
         super().__init__(
@@ -126,7 +135,10 @@ class FileSecretsSettingsSource(EnvSettingsSource):
                 if p.is_file()
             }
             self.env_vars = parse_env_vars(
-                secrets, self.case_sensitive, self.env_ignore_empty, self.env_parse_none_str,
+                secrets,
+                self.case_sensitive,
+                self.env_ignore_empty,
+                self.env_parse_none_str,
             )
 
     def __repr__(self) -> str:

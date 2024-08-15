@@ -9,6 +9,7 @@ from pydantic_file_secrets import FileSecretsSettingsSource
 
 # Settings
 
+
 class DbSettings(BaseModel):
     user: str
     password: str | None = None
@@ -20,7 +21,10 @@ class Settings(BaseSettings):
 
 
 class SettingsMaker:
-    def __call__(self, model_config: SettingsConfigDict | dict | None) -> type[Settings]:
+    def __call__(
+        self,
+        model_config: SettingsConfigDict | dict | None,
+    ) -> type[Settings]:
         class TestSettings(Settings):
             @classmethod
             def settings_customise_sources(
@@ -36,6 +40,7 @@ class SettingsMaker:
                     init_settings,
                     FileSecretsSettingsSource(settings_cls),
                 )
+
         TestSettings.model_config = model_config or {}
         return TestSettings
 
@@ -47,12 +52,14 @@ def settings_model() -> SettingsMaker:
 
 # secrets_dir
 
+
 class SecretsDir(Path):
-    def add_files(self, files: dict[str, str]) -> None:
-        for path, content in files.items():
+    def add_files(self, *files: tuple[str, str]) -> None:
+        for path, content in files:
             f = self / path
             f.parent.mkdir(parents=True, exist_ok=True)  # allow child dirs in path
             f.write_text(content)
+
 
 @fixture()
 def secrets_dir(tmp_path) -> SecretsDir:

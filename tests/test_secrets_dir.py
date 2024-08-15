@@ -59,9 +59,9 @@ def test_missing_dir_invalid(settings_model, monkeypatch, tmp_path):
 
 def test_secrets_not_dir(settings_model, monkeypatch, secrets_dir):
     monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files({
-        'secrets_notdir': '',
-    })
+    secrets_dir.add_files(
+        ('secrets_notdir', ''),
+    )
     Settings = settings_model(
         model_config=dict(
             env_nested_delimiter='__',
@@ -75,9 +75,9 @@ def test_secrets_not_dir(settings_model, monkeypatch, secrets_dir):
 def test_secrets_dir_size(settings_model, monkeypatch, secrets_dir):
     SIZE = 10
     monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files({
-        'large_file': ' ' * SIZE,
-    })
+    secrets_dir.add_files(
+        ('large_file', ' ' * SIZE),
+    )
     Settings = settings_model(
         model_config=dict(
             env_nested_delimiter='__',

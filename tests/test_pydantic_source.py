@@ -2,13 +2,13 @@
 These tests show that the interface of original SecretsSettingsSource
 declares features that are not working.
 """
+
 from enum import StrEnum
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 def test_not_working_env_ignore_empty(monkeypatch, secrets_dir):
-
     class TestEnum(StrEnum):
         TEST = 'test'
 
@@ -25,11 +25,11 @@ def test_not_working_env_ignore_empty(monkeypatch, secrets_dir):
             env_parse_enums=False,
         )
 
-    secrets_dir.add_files({
-        'key_empty': '',
-        'key_none': 'null',
-        'key_enum': 'test',
-    })
+    secrets_dir.add_files(
+        ('key_empty', ''),
+        ('key_none', 'null'),
+        ('key_enum', 'test'),
+    )
 
     conf = Settings()
     assert conf.key_empty == ''  # should be None if working

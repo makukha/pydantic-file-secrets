@@ -4,10 +4,10 @@ import pytest
 
 def test_subdir(settings_model, monkeypatch, secrets_dir):
     monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files({
-        'app_key': 'secret1',
-        'db/password': 'secret2',  # file in subdir
-    })
+    secrets_dir.add_files(
+        ('app_key', 'secret1'),
+        ('db/password', 'secret2'),  # file in subdir
+    )
     Settings = settings_model(
         model_config=dict(
             secrets_dir=secrets_dir,

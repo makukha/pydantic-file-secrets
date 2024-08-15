@@ -1,9 +1,9 @@
 def test_delimited_name(settings_model, monkeypatch, secrets_dir):
     monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files({
-        'app_key': 'secret1',
-        'db___password': 'secret2',  # file name with delimiter
-    })
+    secrets_dir.add_files(
+        ('app_key', 'secret1'),
+        ('db___password', 'secret2'),  # file name with delimiter
+    )
     Settings = settings_model(
         model_config=dict(
             env_nested_delimiter='__',
@@ -18,10 +18,10 @@ def test_delimited_name(settings_model, monkeypatch, secrets_dir):
 
 def test_secrets_off(settings_model, monkeypatch, secrets_dir):
     monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files({
-        'app_key': 'secret1',
-        'db__password': 'secret2',  # file name with delimiter
-    })
+    secrets_dir.add_files(
+        ('app_key', 'secret1'),
+        ('db__password', 'secret2'),  # file name with delimiter
+    )
     Settings = settings_model(
         model_config=dict(
             env_nested_delimiter='__',
