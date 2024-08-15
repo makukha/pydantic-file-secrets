@@ -38,7 +38,7 @@ files = [
 
 [[package]]
 name = "bump-my-version"
-version = "0.25.3"
+version = "0.25.4"
 requires_python = ">=3.8"
 summary = "Version bump your Python project"
 groups = ["build"]
@@ -54,8 +54,8 @@ dependencies = [
     "wcmatch>=8.5.1",
 ]
 files = [
-    {file = "bump_my_version-0.25.3-py3-none-any.whl", hash = "sha256:43638a60adee76d6d7112b7ab7403f0115a4db96d8e6276d935fcbed853673aa"},
-    {file = "bump_my_version-0.25.3.tar.gz", hash = "sha256:9a3752cccf5a4235d2e23705e09ba322f38b20ec162089b6af523049005c5245"},
+    {file = "bump_my_version-0.25.4-py3-none-any.whl", hash = "sha256:cedcb408101cce6413d9b390c7af6c5424dbfde95549d3eef35b19f81940c5bb"},
+    {file = "bump_my_version-0.25.4.tar.gz", hash = "sha256:06a96dd6bb36b39b1f8cf37368c52794f89ba392780ac3c697fcf751a134f9a5"},
 ]
 
 [[package]]

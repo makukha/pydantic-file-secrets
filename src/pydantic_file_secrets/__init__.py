@@ -1,133 +1,141 @@
+import os
 from pathlib import Path
 from typing import Any, Literal
 import warnings
 
-from pydantic.fields import FieldInfo
-from pydantic_settings import BaseSettings, PydanticBaseSettingsSource, SettingsError
+from pydantic_settings import BaseSettings, EnvSettingsSource, SettingsError
+from pydantic_settings.sources import parse_env_vars
 from pydantic_settings.utils import path_type_label
 
 from .__version__ import __version__
 
-__all__ = [
-    'FileSecretsSettingsSource',
-]
+
+__all__ = ['FileSecretsSettingsSource']
 
 
 type SecretsDirMissing = Literal['ok', 'warn', 'error']
 
 
-class FileSecretsSettingsSource(PydanticBaseSettingsSource):
+class FileSecretsSettingsSource(EnvSettingsSource):
     def __init__(
         self,
         settings_cls: type[BaseSettings],
         secrets_dir: str | Path | None = None,
         secrets_dir_missing: SecretsDirMissing | None = None,
+        secrets_dir_max_size: int | None = None,
         secrets_case_sensitive: bool | None = None,
         secrets_prefix: str | None = None,
         secrets_nested_delimiter: str | None = None,
-        secrets_ignore_empty: bool | None = None,
+        secrets_nested_subdir: bool | None = None,
     ) -> None:
-        super().__init__(settings_cls)
 
-        self.secrets_dir: str | None = first_not_none(  # todo: test precedence & backwards compatibility
+        # config options
+        conf = settings_cls.model_config
+        self.secrets_dir: str | None = first_not_none(
             secrets_dir,
-            self.config.get('secrets_dir'),
+            conf.get('secrets_dir'),
         )
-        self.secrets_dir_missing: SecretsDirMissing | None = first_not_none(  # todo: test backwards compatibility
+        self.secrets_dir_missing: SecretsDirMissing | None = first_not_none(
             secrets_dir_missing,
-            self.config.get('secrets_dir_missing'),
-            'warn',  # todo: test all options
+            conf.get('secrets_dir_missing'),
+            'warn',
         )
-        self.case_sensitive: bool = first_not_none(  # todo: test precedence & backwards compatibility
+        self.secrets_dir_max_size: int = first_not_none(
+            secrets_dir_max_size,
+            conf.get('secrets_dir_max_size'),
+            16 * 2 ** 20,  # 8 MiB seems to be a reasonable default
+        )
+        self.case_sensitive: bool = first_not_none(
             secrets_case_sensitive,
-            self.config.get('secrets_case_sensitive'),
-            self.config.get('case_sensitive'),
+            conf.get('secrets_case_sensitive'),
+            conf.get('case_sensitive'),
             False,
         )
-        self.prefix: str = first_not_none(  # todo: test precedence & backwards compatibility
+        self.secrets_prefix: str = first_not_none(
             secrets_prefix,
-            self.config.get('secrets_prefix'),
-            self.config.get('env_prefix'),
+            conf.get('secrets_prefix'),
+            conf.get('env_prefix'),
             '',
         )
-        self.nested_delimiter: str | None = first_not_none(  # todo: test precedence & backwards compatibility
+
+        # nested options
+        self.secrets_nested_delimiter: str | None = first_not_none(
             secrets_nested_delimiter,
-            self.config.get('secrets_nested_delimiter'),
-            self.config.get('env_nested_delimiter'),
+            conf.get('secrets_nested_delimiter'),
+            conf.get('env_nested_delimiter'),
         )
-        self.ignore_empty: bool = first_not_none(  # todo: test precedence & backwards compatibility
-            secrets_ignore_empty,
-            self.config.get('secrets_ignore_empty'),
+        self.secrets_nested_subdir: bool = first_not_none(
+            secrets_nested_subdir,
+            conf.get('secrets_nested_subdir'),
             False,
         )
+        if self.secrets_nested_subdir:
+            if secrets_nested_delimiter or conf.get('secrets_nested_delimiter'):
+                raise SettingsError(
+                    'Options secrets_nested_delimiter and secrets_nested_subdir '
+                    'are mutually exclusive'
+                )
+            else:
+                self.secrets_nested_delimiter = os.sep
 
-    def __call__(self) -> dict[str, Any]:
-
-        # provide valid secrets_path
+        # ensure valid secrets_path
         if self.secrets_dir is None:
-            return {}
-        self.secrets_path: Path = Path(self.secrets_dir).expanduser()
-        if not self.secrets_path.exists():
-            match self.secrets_dir_missing:
-                case 'ok':
-                    pass
-                case 'warn':
-                    warnings.warn(f'directory "{self.secrets_path}" does not exist')
-                case 'error':
-                    raise SettingsError(f'directory "{self.secrets_path}" does not exist')
-                case _:
-                    raise SettingsError(f'invalid secrets_dir_missing value: {self.secrets_dir_missing}')
-            return {}
-        if not self.secrets_path.is_dir():
-            raise SettingsError(f'secrets_dir must reference a directory, not a {path_type_label(self.secrets_path)}')
+            self.secrets_path = None
+        else:
+            self.secrets_path: Path = Path(self.secrets_dir).expanduser().resolve()
+            if not self.secrets_path.exists():
+                match self.secrets_dir_missing:
+                    case 'ok':
+                        pass
+                    case 'warn':
+                        warnings.warn(f'directory "{self.secrets_path}" does not exist')
+                    case 'error':
+                        raise SettingsError(f'directory "{self.secrets_path}" does not exist')
+                    case _:
+                        raise SettingsError(f'invalid secrets_dir_missing value: {self.secrets_dir_missing}')
+            else:
+                if not self.secrets_path.is_dir():
+                    raise SettingsError(f'secrets_dir must reference a directory, not a {path_type_label(self.secrets_path)}')
+                secrets_dir_size = sum(
+                    f.stat().st_size
+                    for f in self.secrets_path.glob('**/*')
+                    if f.is_file()
+                )
+                if secrets_dir_size > self.secrets_dir_max_size:
+                    raise SettingsError(f'secrets_dir size is above {self.secrets_dir_max_size} bytes')
 
+        # construct parent
+        super().__init__(
+            settings_cls,
+            case_sensitive=self.case_sensitive,
+            env_prefix=self.secrets_prefix,
+            env_nested_delimiter=self.secrets_nested_delimiter,
+            env_ignore_empty=False,  # match SecretsSettingsSource behaviour
+            env_parse_none_str=None,  # match SecretsSettingsSource behaviour
+            env_parse_enums=True,  # match SecretsSettingsSource behaviour
+        )
+        self.env_parse_none_str = None  # update manually because of None
 
-        return {}  # todo: remove
-        ###############
+        # update parent members
+        if self.secrets_path is None:
+            self.env_vars = {}
+        else:
+            secrets = {
+                str(p.relative_to(self.secrets_path)): p.read_text()
+                for p in self.secrets_path.glob('**/*')
+                if p.is_file()
+            }
+            self.env_vars = parse_env_vars(
+                secrets, self.case_sensitive, self.env_ignore_empty, self.env_parse_none_str,
+            )
 
-        data: dict[str, Any] = {}
+    def __repr__(self) -> str:
+        return f'FileSecretsSettingsSource(secrets_dir={self.secrets_dir!r})'
 
-        for field_name, field in self.settings_cls.model_fields.items():
-            try:
-                field_value, field_key, value_is_complex = self.get_field_value(field, field_name)
-            except Exception as e:
-                raise SettingsError(
-                    f'error getting value for field "{field_name}" from source "{self.__class__.__name__}"'
-                ) from e
-
-            try:
-                field_value = self.prepare_field_value(field_name, field, field_value, value_is_complex)
-            except ValueError as e:
-                raise SettingsError(
-                    f'error parsing value for field "{field_name}" from source "{self.__class__.__name__}"'
-                ) from e
-
-            if field_value is not None:
-                if self.env_parse_none_str is not None:
-                    if isinstance(field_value, dict):
-                        field_value = self._replace_env_none_type_values(field_value)
-                    elif isinstance(field_value, EnvNoneType):
-                        field_value = None
-                if (
-                    not self.case_sensitive
-                    # and lenient_issubclass(field.annotation, BaseModel)
-                    and isinstance(field_value, dict)
-                ):
-                    data[field_key] = self._replace_field_names_case_insensitively(field, field_value)
-                else:
-                    data[field_key] = field_value
-
-        return data
-
-    def get_field_value(self, field: FieldInfo, field_name: str) -> tuple[Any, str, bool]:
-        return (None, field_name, False)  # todo
-
-
-def dummy():
-    if True:
-        print('')
-    else:
-        pass
+    def __call__(self):
+        res = super().__call__()
+        # breakpoint()  # this is the most informative place to debug
+        return res
 
 
 def first_not_none(*objs) -> Any:

@@ -1,4 +1,4 @@
-# pydantic-file-secrets
+# pydantic-file-secrets 📁🔑
 > Use file secrets in nested models of Pydantic Settings.
 
 [![license](https://img.shields.io/github/license/makukha/pydantic-file-secrets.svg)](https://github.com/makukha/pydantic-file-secrets/blob/main/LICENSE)
@@ -11,13 +11,18 @@
 
 This package is inspired by and based on discussions in [pydantic-settings issue #154](https://github.com/pydantic/pydantic-settings/issues/154).
 
+
 ## Features
 
-* File secret values in nested settings models
-* Plain or nested directory layout: `/run/secrets/topic__key` or `/run/secrets/topic/key`
+* Use secret file source in nested settings models
 * Drop-in replacement of standard `SecretsSettingsSource`
-* Respects `env_nested_delimiter` and other [config options](#configuration-options)
-* Configured independently but with a fallback to `EnvSettingsSource`
+* Plain or nested directory layout: `/run/secrets/dir__key` or `/run/secrets/dir/key`
+* Respects `env_prefix`, `env_nested_delimiter` and other [config options](#configuration-options)
+* Has `secrets_prefix`, `secrets_nested_delimiter`, [etc.](#configuration-options) to configure secrets and env vars separately
+* Pure Python thin wrapper over standard `EnvSettingsSource`
+* No third party dependencies except `pydantic-settings`
+* 100% test coverage
+
 
 ## Motivation
 
@@ -40,25 +45,29 @@ class Settings(BaseSettings):
     )
 ```
 
-Pydantic has a corresponding data source, [`SecretsSettingsSource`](https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.SecretsSettingsSource), but it does not load secrets in nested models. For methods that ***do not*** work in original Pydantic Settings, see [tests/test_pydantic.py]().
+Pydantic Settings has a corresponding data source, [`SecretsSettingsSource`](https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.SecretsSettingsSource), but it does not load secrets in nested models. For methods that ***do not*** work in original Pydantic Settings, see [tests/test_pydantic_motivation.py]().
 
 
 ## Solution
 
 The new `FileSecretsSettingsSource` is a drop-in replacement of stock `SecretsSettingsSource`.
 
+### Installation
+
 ```shell
 $ pip install pydantic-file-secrets
 ```
 
-| file                        | content  |
-|-----------------------------|----------|
-| `/run/secrets/app_key`      | `secret` |
-| `/run/secrets/db__password` | `secret` |
+### Plain directory layout
+
+| file                        | content   |
+|-----------------------------|-----------|
+| `/run/secrets/app_key`      | `secret1` |
+| `/run/secrets/db__password` | `secret2` |
 
 ```python
 from pydantic import BaseModel, Secret
-from pydantic_file_secrets import FileSecretsSettingsSource  # 1
+from pydantic_file_secrets import FileSecretsSettingsSource
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class DbSettings(BaseModel):
@@ -85,26 +94,25 @@ class Settings(BaseSettings):
         return (
             env_settings,
             init_settings,
-            FileSecretsSettingsSource(file_secret_settings),  # 2
+            FileSecretsSettingsSource(settings_cls),
         )
 
 ```
 
-### Custom delimiter
+### Secrets in subdirectories
 
-Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for files. In particular, this allows to use nested directory layout:
+Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for files. In particular, this allows to use nested directory layout along with environmemt variables for other non-secret settings:
 
-| file                       | content  |
-|----------------------------|----------|
-| `/run/secrets/app_key`     | `secret` |
-| `/run/secrets/db/password` | `secret` |
+| file                       | content   |
+|----------------------------|-----------|
+| `/run/secrets/app_key`     | `secret1` |
+| `/run/secrets/db/password` | `secret2` |
 
 ```python
 ...
     model_config = SettingsConfigDict(
         secrets_dir='/run/secrets',
-        env_nested_delimiter='__',
-        secrets_nested_delimiter='/',
+        secrets_nested_subdir=True,
     )
 ...
 ```
@@ -116,8 +124,8 @@ TODO
 
 ## Roadmap
 
-* Support `_FILE` environment variables.
-* Support per-field secret file name override.
+* Support `_FILE` environment variables to set secret file name.
+* Per-field secret file name override.
 
 
 ## Changelog

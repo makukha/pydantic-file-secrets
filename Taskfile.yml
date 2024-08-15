@@ -49,7 +49,13 @@ tasks:
     desc: Run tests.
     deps: [install]
     cmds:
-      - tox run-parallel
+      - tox run-parallel --parallel-live
+
+  test:pdb:
+    desc: Run tests and open debugger if errors found
+    deps: [install]
+    cmds:
+      - pdm run pytest --pdb {{.CLI_ARGS}}
 
   version:
     desc: Bump project version. Use task version -- patch|minor|major|...

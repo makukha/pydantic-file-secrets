@@ -1,40 +1,40 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
 [project]
 name = "pydantic-file-secrets"
-version = "0.1.0a1"
+dynamic = ["version"]
 description = "Use file secrets in nested models of Pydantic Settings."
 authors = [{name = "Michael Makukha", email = "m.makukha@gmail.com"}]
 readme = "README.md"
 license = {text = "MIT"}
 keywords = [
-  # todo
+    # todo
 ]
 classifiers = [
-  "Development Status :: 4 - Beta",
-  "Framework :: Pydantic",
-  "Framework :: Pydantic :: 2",
-  "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: Implementation :: CPython",
-  "Programming Language :: Python :: Implementation :: PyPy",
-  "Topic :: Software Development",
-  "Typing :: Typed",
-  # see https://pypi.org/classifiers/
+    "Development Status :: 4 - Beta",
+    "Framework :: Pydantic",
+    "Framework :: Pydantic :: 2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+    # see https://pypi.org/classifiers/
 ]
 requires-python = ">=3.8"
 dependencies = [
-  "pydantic-settings>=2.0",
+    "pydantic-settings>=2.0",
 ]
 
 [project.urls]
@@ -48,18 +48,17 @@ Changelog = "https://github.com/makukha/pydantic-file-secrets/releases"
 
 [tool.pdm]
 distribution = true
-version = {source = "file", path = "src/pydantic-file-secrets/__init__.py"}
+
+[tool.pdm.version]
+source = "file"
+path = "src/pydantic_file_secrets/__version__.py"
 
 [tool.pdm.dev-dependencies]
 build = [
-  "bump-my-version; python_version>='3.12'",
-  "genbadge[coverage,tests]; python_version>='3.12'",
+    "bump-my-version; python_version>='3.12'",
+    "genbadge[coverage,tests]; python_version>='3.12'",
 ]
 test = [
-  "pytest; python_version>='3.12'",
-  "pytest-cov; python_version>='3.12'",
+    "pytest; python_version>='3.12'",
+    "pytest-cov; python_version>='3.12'",
 ]
-
-[tool.setuptools]
-package-dir = {"" = "src"}
-packages = ["pydantic_file_secrets"]
