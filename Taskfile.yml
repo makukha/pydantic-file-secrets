@@ -43,8 +43,8 @@ tasks:
   lint:
     desc: Run linters and code formatters.
     cmds:
-      - ruff check
-      - pdm run yapf --recursive src
+      - ruff check .
+      - ruff format --check .
 
   test:
     desc: Run tests.

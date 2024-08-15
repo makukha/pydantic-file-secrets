@@ -56,10 +56,9 @@ path = "src/pydantic_file_secrets/__version__.py"
 [tool.pdm.dev-dependencies]
 build = [
     "bump-my-version; python_version>='3.12'",
-    "yapf; python_version>='3.12'",
+    "genbadge[coverage,tests]; python_version>='3.12'",
 ]
 test = [
-    "genbadge[coverage,tests]; python_version>='3.12'",
     "pytest; python_version>='3.12'",
     "pytest-cov; python_version>='3.12'",
 ]
