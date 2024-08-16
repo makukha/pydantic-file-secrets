@@ -2,18 +2,18 @@
 > Use file secrets in nested [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) models.
 
 ![GitHub License](https://img.shields.io/github/license/makukha/pydantic-file-secrets)
-[![Tests](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/0.1.2/docs/badge/tests.svg)](https://github.com/makukha/pydantic-file-secrets)
-[![Coverage](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/0.1.2/docs/badge/coverage.svg)](https://github.com/makukha/pydantic-file-secrets)
+[![Tests](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/0.1.3/docs/badge/tests.svg)](https://github.com/makukha/pydantic-file-secrets)
+[![Coverage](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/0.1.3/docs/badge/coverage.svg)](https://github.com/makukha/pydantic-file-secrets)
 [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v1.json)](https://github.com/astral-sh/ruff)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) \
-[![pypi](https://img.shields.io/pypi/v/pydantic-file-secrets.svg#0.1.2)](https://pypi.python.org/pypi/pydantic-file-secrets)
+[![pypi](https://img.shields.io/pypi/v/pydantic-file-secrets.svg#0.1.3)](https://pypi.python.org/pypi/pydantic-file-secrets)
 [![versions](https://img.shields.io/pypi/pyversions/pydantic-file-secrets.svg)](https://pypi.org/project/pydantic-file-secrets)
 [![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://pydantic.dev)
 
 
 This project is inspired by discussions in [pydantic-settings issue #154](https://github.com/pydantic/pydantic-settings/issues/154).
 
-> This package unties secrets from environment variables config options and implements other long waited features.
+This package unties secrets from environment variables config options and implements other long waited features.
 
 
 ## Features
@@ -174,6 +174,20 @@ Some config options that are declared in [`SecretsSettingsSource`](https://docs.
 * `env_parse_enums`
 
 However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/main/tests/test_ignored_options.py) that the behaviour of `FileSecretsSettingsSource` matches `SecretsSettingsSource` to provide a drop-in replacement, although it is somewhat wierd (e.g. `env_parse_enums` is always `True`).
+
+
+## Testing
+
+We [ensure](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) 100% test coverage for latest Python release (3.12).
+
+We [test](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) all minor Pydantic Settings v2 versions and all minor Python 3 versions supported by Pydantic Settings:
+
+* Python 3.13 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.12 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.11 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.10 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.9 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.8 + pydantic-settings 2.{0,1,2,3,4}
 
 
 ## Roadmap
