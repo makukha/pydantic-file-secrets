@@ -13,7 +13,7 @@
 
 This project is inspired by discussions in [pydantic-settings issue #154](https://github.com/pydantic/pydantic-settings/issues/154).
 
-> This package unties secrets from environment variables config options and implements other long waited features.
+This package unties secrets from environment variables config options and implements other long waited features.
 
 
 ## Features
@@ -174,6 +174,20 @@ Some config options that are declared in [`SecretsSettingsSource`](https://docs.
 * `env_parse_enums`
 
 However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/main/tests/test_ignored_options.py) that the behaviour of `FileSecretsSettingsSource` matches `SecretsSettingsSource` to provide a drop-in replacement, although it is somewhat wierd (e.g. `env_parse_enums` is always `True`).
+
+
+## Tests
+
+We [ensure](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) 100% test coverage for latest Python release (3.12).
+
+We [test](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) all minor Pydantic Settings v2 versions and all minor Python 3 versions supported by Pydantic Settings:
+
+* Python 3.13 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.12 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.11 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.10 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.9 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.8 + pydantic-settings 2.{0,1,2,3,4}
 
 
 ## Roadmap

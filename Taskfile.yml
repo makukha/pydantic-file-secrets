@@ -50,7 +50,7 @@ tasks:
     desc: Run tests.
     deps: [install]
     cmds:
-      - tox run-parallel --parallel-live
+      - tox run
 
   test:pdb:
     desc: Run tests and open debugger on errors.
