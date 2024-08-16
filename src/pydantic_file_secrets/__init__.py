@@ -137,9 +137,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
                     f'not a {path_type_label(path)}'
                 )
             secrets_dir_size = sum(
-                f.stat().st_size
-                for f in path.glob('**/*')
-                if f.is_file()
+                f.stat().st_size for f in path.glob('**/*') if f.is_file()
             )
             if secrets_dir_size > self.secrets_dir_max_size:
                 raise SettingsError(
