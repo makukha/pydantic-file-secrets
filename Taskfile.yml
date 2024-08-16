@@ -52,6 +52,12 @@ tasks:
     cmds:
       - tox run
 
+  test:main:
+    desc: Run tests in main environment.
+    deps: [install]
+    cmds:
+      - tox run -m main
+
   test:pdb:
     desc: Run tests and open debugger on errors.
     deps: [install]

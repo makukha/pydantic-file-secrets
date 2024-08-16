@@ -1,3 +1,4 @@
+from functools import reduce
 import os
 from pathlib import Path
 from typing import Any, Literal
@@ -20,7 +21,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
     def __init__(
         self,
         settings_cls: type[BaseSettings],
-        secrets_dir: str | Path | None = None,
+        secrets_dir: str | Path | list[str | Path] | None = None,
         secrets_dir_missing: SecretsDirMissing | None = None,
         secrets_dir_max_size: int | None = None,
         secrets_case_sensitive: bool | None = None,
@@ -30,7 +31,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
     ) -> None:
         # config options
         conf = settings_cls.model_config
-        self.secrets_dir: str | None = first_not_none(
+        self.secrets_dir: str | Path | list[str | Path] | None = first_not_none(
             secrets_dir,
             conf.get('secrets_dir'),
         )
@@ -79,39 +80,14 @@ class FileSecretsSettingsSource(EnvSettingsSource):
 
         # ensure valid secrets_path
         if self.secrets_dir is None:
-            self.secrets_path = None
+            paths = []
+        elif isinstance(self.secrets_dir, list):
+            paths = self.secrets_dir
         else:
-            self.secrets_path: Path = Path(self.secrets_dir).expanduser().resolve()
-            if not self.secrets_path.exists():
-                match self.secrets_dir_missing:
-                    case 'ok':
-                        pass
-                    case 'warn':
-                        warnings.warn(f'directory "{self.secrets_path}" does not exist')
-                    case 'error':
-                        raise SettingsError(
-                            f'directory "{self.secrets_path}" does not exist'
-                        )
-                    case _:
-                        raise SettingsError(
-                            f'invalid secrets_dir_missing value: '
-                            f'{self.secrets_dir_missing}'
-                        )
-            else:
-                if not self.secrets_path.is_dir():
-                    raise SettingsError(
-                        'secrets_dir must reference a directory, '
-                        f'not a {path_type_label(self.secrets_path)}'
-                    )
-                secrets_dir_size = sum(
-                    f.stat().st_size
-                    for f in self.secrets_path.glob('**/*')
-                    if f.is_file()
-                )
-                if secrets_dir_size > self.secrets_dir_max_size:
-                    raise SettingsError(
-                        f'secrets_dir size is above {self.secrets_dir_max_size} bytes'
-                    )
+            paths = [self.secrets_dir]
+        self.secrets_paths: list[Path] = [Path(p).expanduser().resolve() for p in paths]
+        for path in self.secrets_paths:
+            self.validate_secrets_path(path)
 
         # construct parent
         super().__init__(
@@ -126,20 +102,55 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         self.env_parse_none_str = None  # update manually because of None
 
         # update parent members
-        if self.secrets_path is None:
+        if not len(self.secrets_paths):
             self.env_vars = {}
         else:
-            secrets = {
-                str(p.relative_to(self.secrets_path)): p.read_text()
-                for p in self.secrets_path.glob('**/*')
-                if p.is_file()
-            }
+            secrets = reduce(
+                lambda d1, d2: d1 | d2,
+                (self.load_secrets(p) for p in self.secrets_paths),
+            )
             self.env_vars = parse_env_vars(
                 secrets,
                 self.case_sensitive,
                 self.env_ignore_empty,
                 self.env_parse_none_str,
             )
+
+    def validate_secrets_path(self, path: Path) -> None:
+        if not path.exists():
+            match self.secrets_dir_missing:
+                case 'ok':
+                    pass
+                case 'warn':
+                    warnings.warn(f'directory "{path}" does not exist')
+                case 'error':
+                    raise SettingsError(f'directory "{path}" does not exist')
+                case _:
+                    raise SettingsError(
+                        f'invalid secrets_dir_missing value: '
+                        f'{self.secrets_dir_missing}'
+                    )
+        else:
+            if not path.is_dir():
+                raise SettingsError(
+                    f'secrets_dir must reference a directory, '
+                    f'not a {path_type_label(path)}'
+                )
+            secrets_dir_size = sum(
+                f.stat().st_size for f in path.glob('**/*') if f.is_file()
+            )
+            if secrets_dir_size > self.secrets_dir_max_size:
+                raise SettingsError(
+                    f'secrets_dir size is above {self.secrets_dir_max_size} bytes'
+                )
+
+    @staticmethod
+    def load_secrets(path: Path) -> dict[str, str]:
+        return {
+            str(p.relative_to(path)): p.read_text()
+            for p in path.glob('**/*')
+            if p.is_file()
+        }
 
     def __repr__(self) -> str:
         return f'FileSecretsSettingsSource(secrets_dir={self.secrets_dir!r})'
