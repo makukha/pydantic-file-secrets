@@ -23,7 +23,8 @@ class Settings(BaseSettings):
 
 class SettingsPairMaker:
     def __call__(
-        self, model_config: SettingsConfigDict,
+        self,
+        model_config: SettingsConfigDict,
     ) -> tuple[type[Settings], type[Settings]]:
         class SettingsSSS(Settings):  # SecretsSettingsSource
             pass
@@ -79,9 +80,7 @@ def test_env_ignore_empty(settings_models, conf, populated_secrets_dir):
     assert conf_sss.key_empty == conf_fsss.key_empty == ''
 
 
-@pytest.mark.parametrize(
-    'conf', [{}, {'env_parse_none_str': 'null'}]
-)
+@pytest.mark.parametrize('conf', [{}, {'env_parse_none_str': 'null'}])
 def test_env_parse_none_str(settings_models, conf, populated_secrets_dir):
     SettingsSSS, SettingsFSSS = settings_models(
         model_config=SettingsConfigDict(
