@@ -1,5 +1,6 @@
 # pydantic-file-secrets 🔑
-> Use file secrets in nested [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) models.
+
+> Use file secrets in nested [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) models, drop-in replacement of `SecretsSettingsSource`.
 
 ![GitHub License](https://img.shields.io/github/license/makukha/pydantic-file-secrets)
 [![Tests](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/0.1.3/docs/badge/tests.svg)](https://github.com/makukha/pydantic-file-secrets)
@@ -11,7 +12,7 @@
 [![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://pydantic.dev)
 
 
-This project is inspired by discussions in [pydantic-settings issue #154](https://github.com/pydantic/pydantic-settings/issues/154).
+This project is inspired by discussions in Pydantic Settings and solves problems in issues [#3](https://github.com/pydantic/pydantic-settings/issues/3), [#30](https://github.com/pydantic/pydantic-settings/issues/30), [#154](https://github.com/pydantic/pydantic-settings/issues/154).
 
 This package unties secrets from environment variables config options and implements other long waited features.
 
@@ -23,6 +24,7 @@ This package unties secrets from environment variables config options and implem
 * Plain or nested directory layout: `/run/secrets/dir__key` or `/run/secrets/dir/key`
 * Respects `env_prefix`, `env_nested_delimiter` and other [config options](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options)
 * Has `secrets_prefix`, `secrets_nested_delimiter`, [etc.](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options) to configure secrets and env vars separately
+* Use multiple `secrets_dir` directories
 * Pure Python thin wrapper over standard `EnvSettingsSource`
 * No third party dependencies except `pydantic-settings`
 * 100% test coverage
@@ -128,11 +130,23 @@ secret2
 ...
 ```
 
+### Multiple `secrets_dir`
+
+When passing `list` to `secrets_dir`, last match wins.
+
+```python
+...
+    model_config = SettingsConfigDict(
+        secrets_dir=['/run/configs/', '/run/secrets'],
+    )
+...
+```
+
 ## Configuration options
 
 ### secrets_dir
 
-Path to secrets directory, same as `SecretsSettingsSource.secrets_dir`.
+Path to secrets directory. Same as `SecretsSettingsSource.secrets_dir` if `str` or `Path`. If `list`, the last match wins. If `secrets_dir` is passed in both source constructor and model config, values are not merged (constructor takes priority).
 
 ### secrets_dir_missing
 
@@ -142,11 +156,15 @@ If `secrets_dir` does not exist, original `SecretsSettingsSource` issues a warni
 * `'warn'` (default) — print warning, same as `SecretsSettingsSource`
 * `'error'` — raise `SettingsError`
 
+If multiple `secrets_dir` passed, the same `secrets_dir_missing` action applies to each of them.
+
 ### secrets_dir_max_size
 
 Limit the size of `secrets_dir` for security reasons, defaults to 8 MiB.
 
 `FileSecretsSettingsSource` is a thin wrapper around [`EnvSettingsSource`](https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.EnvSettingsSource), which loads all potential secrets on initialization. This could lead to `MemoryError` if we mount a large file under `secrets_dir`.
+
+If multiple `secrets_dir` passed, the limit applies to each directory independently.
 
 ### secrets_case_sensitive
 
@@ -158,7 +176,7 @@ Same as [`env_nested_delimiter`](https://docs.pydantic.dev/latest/concepts/pydan
 
 ### secrets_nested_subdir
 
-Boolean flag to turn on nested secrets directory mode, `False` by default. If `True`, sets `secrets_nested_delimiter` to [`os.sep`](https://docs.python.org/3/library/os.html#os.sep). Raises `settingsError` if `secrets_nested_delimiter` is already specified.
+Boolean flag to turn on nested secrets directory mode, `False` by default. If `True`, sets `secrets_nested_delimiter` to [`os.sep`](https://docs.python.org/3/library/os.html#os.sep). Raises `SettingsError` if `secrets_nested_delimiter` is already specified.
 
 ### secrets_prefix
 
@@ -182,12 +200,7 @@ We [ensure](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main
 
 We [test](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) all minor Pydantic Settings v2 versions and all minor Python 3 versions supported by Pydantic Settings:
 
-* Python 3.13 + pydantic-settings 2.{0,1,2,3,4}
-* Python 3.12 + pydantic-settings 2.{0,1,2,3,4}
-* Python 3.11 + pydantic-settings 2.{0,1,2,3,4}
-* Python 3.10 + pydantic-settings 2.{0,1,2,3,4}
-* Python 3.9 + pydantic-settings 2.{0,1,2,3,4}
-* Python 3.8 + pydantic-settings 2.{0,1,2,3,4}
+* Python 3.{8,9,10,11,12,13} + pydantic-settings 2.{0,1,2,3,4}
 
 
 ## Roadmap
