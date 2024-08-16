@@ -8,7 +8,7 @@ from enum import StrEnum
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-def test_not_working_env_ignore_empty(monkeypatch, secrets_dir):
+def test_not_working_env_ignore_empty(secrets_dir):
     class TestEnum(StrEnum):
         TEST = 'test'
 
