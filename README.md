@@ -176,7 +176,7 @@ Some config options that are declared in [`SecretsSettingsSource`](https://docs.
 However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/main/tests/test_ignored_options.py) that the behaviour of `FileSecretsSettingsSource` matches `SecretsSettingsSource` to provide a drop-in replacement, although it is somewhat wierd (e.g. `env_parse_enums` is always `True`).
 
 
-## Tests
+## Testing
 
 We [ensure](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) 100% test coverage for latest Python release (3.12).
 
