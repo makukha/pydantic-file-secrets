@@ -65,6 +65,9 @@ build = [
     "bump-my-version; python_version>='3.12'",
     "genbadge[coverage,tests]; python_version>='3.12'",
 ]
+lint = [
+    "mypy>=1.11.2",
+]
 test = [
     "pytest; python_version>='3.12'",
     "pytest-cov; python_version>='3.12'",
