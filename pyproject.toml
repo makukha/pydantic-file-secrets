@@ -5,7 +5,9 @@ build-backend = "pdm.backend"
 [project]
 name = "pydantic-file-secrets"
 dynamic = ["version"]
-description = "Use file secrets in nested models of Pydantic Settings."
+description = """Use file secrets in nested Pydantic Settings models, \
+    drop-in replacement for SecretsSettingsSource.
+"""
 authors = [
     {name = "Michael Makukha", email = "m.makukha@gmail.com"},
 ]

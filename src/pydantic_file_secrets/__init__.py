@@ -147,7 +147,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
     @staticmethod
     def load_secrets(path: Path) -> dict[str, str]:
         return {
-            str(p.relative_to(path)): p.read_text()
+            str(p.relative_to(path)): p.read_text().strip()
             for p in path.glob('**/*')
             if p.is_file()
         }
