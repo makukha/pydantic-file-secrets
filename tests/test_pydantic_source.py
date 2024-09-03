@@ -35,3 +35,37 @@ def test_not_working_env_ignore_empty(secrets_dir):
     assert conf.key_empty == ''  # should be None if working
     assert conf.key_none == 'null'  # should be Null if working
     assert isinstance(conf.key_enum, TestEnum)  # should be True if working
+
+
+def test_str_strip_whitespace_not_specified(secrets_dir):
+    class Settings(BaseSettings):
+        key: str
+
+        model_config = SettingsConfigDict(
+            secrets_dir=secrets_dir,
+            # str_strip_whitespace not specified
+        )
+
+    secrets_dir.add_files(
+        ('key', ' value '),
+    )
+
+    conf = Settings()
+    assert conf.key == 'value'  # spaces are stripped by SecretsSettingsSource
+
+
+def test_str_strip_whitespace_not_respected(secrets_dir):
+    class Settings(BaseSettings):
+        key: str
+
+        model_config = SettingsConfigDict(
+            secrets_dir=secrets_dir,
+            str_strip_whitespace=False,
+        )
+
+    secrets_dir.add_files(
+        ('key', ' value '),
+    )
+
+    conf = Settings()
+    assert conf.key == 'value'  # str_strip_whitespace not respected
