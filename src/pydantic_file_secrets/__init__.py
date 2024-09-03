@@ -39,7 +39,11 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         # SecretsSettingsSource instance instead (as it is shown in usage examples),
         # otherwise `_secrets_dir` arg passed to Settings() constructor
         # will be ignored.
-        settings_cls = getattr(file_secret_settings, 'settings_cls', file_secret_settings)
+        settings_cls: type[BaseSettings] = getattr(
+            file_secret_settings,
+            'settings_cls',
+            file_secret_settings,  # type: ignore[arg-type]
+        )
         # config options
         conf = settings_cls.model_config
         self.secrets_dir: str | Path | list[str | Path] | None = first_not_none(
