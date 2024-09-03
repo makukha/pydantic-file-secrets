@@ -4,7 +4,12 @@ from pathlib import Path
 from typing import Any, Literal
 import warnings
 
-from pydantic_settings import BaseSettings, EnvSettingsSource, SecretsSettingsSource, SettingsError
+from pydantic_settings import (
+    BaseSettings,
+    EnvSettingsSource,
+    SecretsSettingsSource,
+    SettingsError,
+)
 from pydantic_settings.sources import parse_env_vars
 from pydantic_settings.utils import path_type_label
 
@@ -14,15 +19,12 @@ from .__version__ import __version__
 __all__ = ['__version__', 'FileSecretsSettingsSource']
 
 
-type SecretsDirMissing = Literal['ok', 'warn', 'error']
-
-
 class FileSecretsSettingsSource(EnvSettingsSource):
     def __init__(
         self,
-        file_secret_settings: SecretsSettingsSource | BaseSettings,
+        file_secret_settings: SecretsSettingsSource | type[BaseSettings],
         secrets_dir: str | Path | list[str | Path] | None = None,
-        secrets_dir_missing: SecretsDirMissing | None = None,
+        secrets_dir_missing: Literal['ok', 'warn', 'error'] | None = None,
         secrets_dir_max_size: int | None = None,
         secrets_case_sensitive: bool | None = None,
         secrets_prefix: str | None = None,
@@ -37,7 +39,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
             # will be ignored.
             settings_cls = file_secret_settings
         else:
-            settings_cls = file_secret_settings.settings_cls
+            settings_cls = file_secret_settings.settings_cls  # type: ignore[union-attr]
         # config options
         conf = settings_cls.model_config
         self.secrets_dir: str | Path | list[str | Path] | None = first_not_none(
@@ -45,7 +47,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
             secrets_dir,
             conf.get('secrets_dir'),
         )
-        self.secrets_dir_missing: SecretsDirMissing | None = first_not_none(
+        self.secrets_dir_missing: Literal['ok', 'warn', 'error'] = first_not_none(
             secrets_dir_missing,
             conf.get('secrets_dir_missing'),
             'warn',
