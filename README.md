@@ -20,7 +20,7 @@ This package unties secrets from environment variables config options and implem
 ## Features
 
 * Use secret file source in nested settings models
-* Drop-in replacement of standard `SecretsSettingsSource`
+* Drop-in replacement of standard `SecretsSettingsSource` (up to monkey patching)
 * Plain or nested directory layout: `/run/secrets/dir__key` or `/run/secrets/dir/key`
 * Respects `env_prefix`, `env_nested_delimiter` and other [config options](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options)
 * Has `secrets_prefix`, `secrets_nested_delimiter`, [etc.](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options) to configure secrets and env vars separately

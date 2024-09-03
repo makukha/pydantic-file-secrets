@@ -30,16 +30,16 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         secrets_prefix: str | None = None,
         secrets_nested_delimiter: str | None = None,
         secrets_nested_subdir: bool | None = None,
+        # args for compatibility with SecretsSettingsSource, don't use directly
+        case_sensitive: bool | None = None,
+        env_prefix: str | None = None,
     ) -> None:
-        if isinstance(file_secret_settings, BaseSettings):
-            # We allow the first argument to be settings_cls like original
-            # SecretsSettingsSource. However, it is recommended to pass
-            # SecretsSettingsSource instance instead (as it is shown in usage examples),
-            # otherwise `_secrets_dir` arg passed to Settings() constructor
-            # will be ignored.
-            settings_cls = file_secret_settings
-        else:
-            settings_cls = file_secret_settings.settings_cls  # type: ignore[union-attr]
+        # We allow the first argument to be settings_cls like original
+        # SecretsSettingsSource. However, it is recommended to pass
+        # SecretsSettingsSource instance instead (as it is shown in usage examples),
+        # otherwise `_secrets_dir` arg passed to Settings() constructor
+        # will be ignored.
+        settings_cls = getattr(file_secret_settings, 'settings_cls', file_secret_settings)
         # config options
         conf = settings_cls.model_config
         self.secrets_dir: str | Path | list[str | Path] | None = first_not_none(
@@ -60,12 +60,14 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         self.case_sensitive: bool = first_not_none(
             secrets_case_sensitive,
             conf.get('secrets_case_sensitive'),
+            case_sensitive,
             conf.get('case_sensitive'),
             False,
         )
         self.secrets_prefix: str = first_not_none(
             secrets_prefix,
             conf.get('secrets_prefix'),
+            env_prefix,
             conf.get('env_prefix'),
             '',
         )
