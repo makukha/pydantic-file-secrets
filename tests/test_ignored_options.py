@@ -40,9 +40,9 @@ class SettingsPairMaker:
                 file_secret_settings,
             ) -> tuple:
                 return (
-                    env_settings,
                     init_settings,
-                    FileSecretsSettingsSource(settings_cls),
+                    env_settings,
+                    FileSecretsSettingsSource(file_secret_settings),
                 )
 
         SettingsSSS.model_config = model_config

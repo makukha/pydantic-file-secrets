@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Literal
 import warnings
 
-from pydantic_settings import BaseSettings, EnvSettingsSource, SettingsError
+from pydantic_settings import BaseSettings, EnvSettingsSource, SecretsSettingsSource, SettingsError
 from pydantic_settings.sources import parse_env_vars
 from pydantic_settings.utils import path_type_label
 
@@ -20,7 +20,7 @@ type SecretsDirMissing = Literal['ok', 'warn', 'error']
 class FileSecretsSettingsSource(EnvSettingsSource):
     def __init__(
         self,
-        settings_cls: type[BaseSettings],
+        file_secret_settings: SecretsSettingsSource | BaseSettings,
         secrets_dir: str | Path | list[str | Path] | None = None,
         secrets_dir_missing: SecretsDirMissing | None = None,
         secrets_dir_max_size: int | None = None,
@@ -29,9 +29,19 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         secrets_nested_delimiter: str | None = None,
         secrets_nested_subdir: bool | None = None,
     ) -> None:
+        if isinstance(file_secret_settings, BaseSettings):
+            # We allow the first argument to be settings_cls like original
+            # SecretsSettingsSource. However, it is recommended to pass
+            # SecretsSettingsSource instance instead (as it is shown in usage examples),
+            # otherwise `_secrets_dir` arg passed to Settings() constructor
+            # will be ignored.
+            settings_cls = file_secret_settings
+        else:
+            settings_cls = file_secret_settings.settings_cls
         # config options
         conf = settings_cls.model_config
         self.secrets_dir: str | Path | list[str | Path] | None = first_not_none(
+            getattr(file_secret_settings, 'secrets_dir', None),
             secrets_dir,
             conf.get('secrets_dir'),
         )
