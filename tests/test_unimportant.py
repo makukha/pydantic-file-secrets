@@ -1,5 +1,5 @@
 from pydantic_file_secrets import FileSecretsSettingsSource
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, SecretsSettingsSource, SettingsConfigDict
 
 
 def test_repr(secrets_dir):
@@ -8,5 +8,5 @@ def test_repr(secrets_dir):
             secrets_dir=secrets_dir,
         )
 
-    src = FileSecretsSettingsSource(Settings)
+    src = FileSecretsSettingsSource(SecretsSettingsSource(Settings))
     assert f'{src!r}'.startswith(f'{src.__class__.__name__}(')

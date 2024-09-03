@@ -36,9 +36,9 @@ class SettingsMaker:
                 file_secret_settings,
             ) -> tuple:
                 return (
-                    env_settings,
                     init_settings,
-                    FileSecretsSettingsSource(settings_cls),
+                    env_settings,
+                    FileSecretsSettingsSource(file_secret_settings),
                 )
 
         TestSettings.model_config = model_config or {}
