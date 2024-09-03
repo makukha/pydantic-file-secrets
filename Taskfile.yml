@@ -27,24 +27,30 @@ tasks:
   install:
     desc: Install dev python environment.
     cmds:
-      - task: dep:lock
+      - task: dependencies:lock
       - pdm install --check --dev
 
   # dependencies lock in PDM is slow, run only when pyproject.toml changes
-  dep:lock:
+  dependencies:lock:
     internal: true
     sources:
       - pyproject.toml
     generates:
       - pdm.lock
     cmds:
-      - pdm lock
+      - pdm lock --update-reuse
 
   lint:
-    desc: Run linters and code formatters.
+    desc: Run linters.
     cmds:
+      - pdm run mypy src
       - ruff check
       - ruff format --check
+
+  format:
+    desc: Run code formatters.
+    cmds:
+      - ruff format
 
   test:
     desc: Run tests.

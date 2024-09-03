@@ -4,7 +4,12 @@ from pathlib import Path
 from typing import Any, Literal
 import warnings
 
-from pydantic_settings import BaseSettings, EnvSettingsSource, SecretsSettingsSource, SettingsError
+from pydantic_settings import (
+    BaseSettings,
+    EnvSettingsSource,
+    SecretsSettingsSource,
+    SettingsError,
+)
 from pydantic_settings.sources import parse_env_vars
 from pydantic_settings.utils import path_type_label
 
@@ -14,30 +19,31 @@ from .__version__ import __version__
 __all__ = ['__version__', 'FileSecretsSettingsSource']
 
 
-type SecretsDirMissing = Literal['ok', 'warn', 'error']
-
-
 class FileSecretsSettingsSource(EnvSettingsSource):
     def __init__(
         self,
-        file_secret_settings: SecretsSettingsSource | BaseSettings,
+        file_secret_settings: SecretsSettingsSource | type[BaseSettings],
         secrets_dir: str | Path | list[str | Path] | None = None,
-        secrets_dir_missing: SecretsDirMissing | None = None,
+        secrets_dir_missing: Literal['ok', 'warn', 'error'] | None = None,
         secrets_dir_max_size: int | None = None,
         secrets_case_sensitive: bool | None = None,
         secrets_prefix: str | None = None,
         secrets_nested_delimiter: str | None = None,
         secrets_nested_subdir: bool | None = None,
+        # args for compatibility with SecretsSettingsSource, don't use directly
+        case_sensitive: bool | None = None,
+        env_prefix: str | None = None,
     ) -> None:
-        if isinstance(file_secret_settings, BaseSettings):
-            # We allow the first argument to be settings_cls like original
-            # SecretsSettingsSource. However, it is recommended to pass
-            # SecretsSettingsSource instance instead (as it is shown in usage examples),
-            # otherwise `_secrets_dir` arg passed to Settings() constructor
-            # will be ignored.
-            settings_cls = file_secret_settings
-        else:
-            settings_cls = file_secret_settings.settings_cls
+        # We allow the first argument to be settings_cls like original
+        # SecretsSettingsSource. However, it is recommended to pass
+        # SecretsSettingsSource instance instead (as it is shown in usage examples),
+        # otherwise `_secrets_dir` arg passed to Settings() constructor
+        # will be ignored.
+        settings_cls: type[BaseSettings] = getattr(
+            file_secret_settings,
+            'settings_cls',
+            file_secret_settings,  # type: ignore[arg-type]
+        )
         # config options
         conf = settings_cls.model_config
         self.secrets_dir: str | Path | list[str | Path] | None = first_not_none(
@@ -45,7 +51,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
             secrets_dir,
             conf.get('secrets_dir'),
         )
-        self.secrets_dir_missing: SecretsDirMissing | None = first_not_none(
+        self.secrets_dir_missing: Literal['ok', 'warn', 'error'] = first_not_none(
             secrets_dir_missing,
             conf.get('secrets_dir_missing'),
             'warn',
@@ -58,12 +64,14 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         self.case_sensitive: bool = first_not_none(
             secrets_case_sensitive,
             conf.get('secrets_case_sensitive'),
+            case_sensitive,
             conf.get('case_sensitive'),
             False,
         )
         self.secrets_prefix: str = first_not_none(
             secrets_prefix,
             conf.get('secrets_prefix'),
+            env_prefix,
             conf.get('env_prefix'),
             '',
         )
