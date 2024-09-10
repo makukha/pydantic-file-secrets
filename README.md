@@ -9,22 +9,21 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) \
 [![pypi](https://img.shields.io/pypi/v/pydantic-file-secrets.svg#0.3.0)](https://pypi.python.org/pypi/pydantic-file-secrets)
 [![versions](https://img.shields.io/pypi/pyversions/pydantic-file-secrets.svg)](https://pypi.org/project/pydantic-file-secrets)
-[![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://pydantic.dev)
+[![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://pydantic.dev) \
+![PyPI - Downloads](https://img.shields.io/pypi/dw/pydantic-file-secrets)
 
 
-This project is inspired by discussions in Pydantic Settings and solves problems in issues [#3](https://github.com/pydantic/pydantic-settings/issues/3), [#30](https://github.com/pydantic/pydantic-settings/issues/30), [#154](https://github.com/pydantic/pydantic-settings/issues/154).
-
-This package unties secrets from environment variables config options and implements other long waited features.
+This project is inspired by discussions in Pydantic Settings and solves problems in issues [#30](https://github.com/pydantic/pydantic-settings/issues/30), [#154](https://github.com/pydantic/pydantic-settings/issues/154).
 
 
 ## Features
 
 * Use secret file source in nested settings models
-* Drop-in replacement of standard `SecretsSettingsSource` (up to monkey patching)
 * Plain or nested directory layout: `/run/secrets/dir__key` or `/run/secrets/dir/key`
 * Respects `env_prefix`, `env_nested_delimiter` and other [config options](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options)
-* Has `secrets_prefix`, `secrets_nested_delimiter`, [etc.](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options) to configure secrets and env vars separately
-* Use multiple `secrets_dir` directories
+* Implements config options `secrets_prefix`, `secrets_nested_delimiter`, [etc.](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options) to configure secrets and env vars independently
+* Drop-in replacement of standard `SecretsSettingsSource`
+* Can be used to monkey patch `SecretsSettingsSource`
 * Pure Python thin wrapper over standard `EnvSettingsSource`
 * No third party dependencies except `pydantic-settings`
 * 100% test coverage
@@ -197,11 +196,17 @@ However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/ma
 
 ## Testing
 
-We [ensure](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) 100% test coverage for latest Python release (3.12).
+100% test coverage [is ensured](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) for latest stable Python release (3.12).
 
-We [test](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) all minor Pydantic Settings v2 versions and all minor Python 3 versions supported by Pydantic Settings:
+Tests are run for all minor Pydantic Settings v2 versions and all minor Python 3 versions supported by Pydantic Settings:
 
-* Python 3.{8,9,10,11,12,13} + pydantic-settings 2.{0,1,2,3,4}
+* Python v. 3.{8,9,10,11,12,13}
+* pydantic-settings v. 2.{0,1,2,3,4,5}
+
+
+## History
+
+* Multiple `secrets_dir` directories feature [ported](https://github.com/pydantic/pydantic-settings/releases/tag/v2.5.0) to `pydantic-settings` version 2.5.0
 
 
 ## Roadmap
