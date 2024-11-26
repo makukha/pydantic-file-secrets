@@ -10,7 +10,7 @@
 [![pypi](https://img.shields.io/pypi/v/pydantic-file-secrets.svg#0.3.0)](https://pypi.python.org/pypi/pydantic-file-secrets)
 [![versions](https://img.shields.io/pypi/pyversions/pydantic-file-secrets.svg)](https://pypi.org/project/pydantic-file-secrets)
 [![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://pydantic.dev) \
-![PyPI - Downloads](https://img.shields.io/pypi/dw/pydantic-file-secrets)
+[![PyPI - Downloads](https://img.shields.io/pypi/dw/pydantic-file-secrets)](https://pypistats.org/packages/pydantic-file-secrets)
 
 
 This project is inspired by discussions in Pydantic Settings and solves problems in issues [#30](https://github.com/pydantic/pydantic-settings/issues/30), [#154](https://github.com/pydantic/pydantic-settings/issues/154).
@@ -200,19 +200,13 @@ However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/ma
 
 Tests are run for all minor Pydantic Settings v2 versions and all minor Python 3 versions supported by Pydantic Settings:
 
-* Python v. 3.{8,9,10,11,12,13}
-* pydantic-settings v. 2.{0,1,2,3,4,5}
+* Python v. 3.{8,9,10,11,12,13,14}
+* pydantic-settings v. 2.{0,1,2,3,4,5,6}
 
 
 ## History
 
-* Multiple `secrets_dir` directories feature [ported](https://github.com/pydantic/pydantic-settings/releases/tag/v2.5.0) to `pydantic-settings` version 2.5.0
-
-
-## Roadmap
-
-* Support `_FILE` environment variables to set secret file name.
-* Per-field secret file name override.
+* Several `secrets_dir` features were [ported](https://github.com/pydantic/pydantic-settings/releases/tag/v2.5.0) to `pydantic-settings` version 2.5.0
 
 
 ## Authors
