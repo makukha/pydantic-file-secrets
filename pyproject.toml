@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "pydantic-file-secrets"
-dynamic = ["version"]
+version = "0.4.0"
 description = """Use file secrets in nested Pydantic Settings models, \
     drop-in replacement for SecretsSettingsSource.
 """
@@ -41,7 +41,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "pydantic-settings>=2.0",
+    "pydantic-settings>=2.2",
 ]
 
 [project.urls]
@@ -50,25 +50,46 @@ Changelog = "https://github.com/makukha/pydantic-file-secrets/releases"
 Issues = "https://github.com/makukha/pydantic-file-secrets/issues"
 Source = "https://github.com/makukha/pydantic-file-secrets"
 
+# bump-my-version
 
-# tools
-
-[tool.pdm]
-distribution = true
-
-[tool.pdm.version]
-source = "file"
-path = "src/pydantic_file_secrets/__version__.py"
-
-[tool.pdm.dev-dependencies]
-build = [
-    "bump-my-version; python_version>='3.12'",
-    "genbadge[coverage,tests]; python_version>='3.12'",
+[tool.bumpversion]
+current_version = "0.4.0"
+allow_dirty = true
+files = [
+  {filename = "pyproject.toml"},
+  {filename = "README.md"},
+  {filename = "src/pydantic_file_secrets/__version__.py"},
 ]
-lint = [
-    "mypy>=1.11.2",
+
+# ruff
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "S"]
+ignore = []
+fixable = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/**/*.py" = [
+    "S101", # asserts allowed in tests
+    "ARG", # unused function args (fixtures)
 ]
-test = [
-    "pytest; python_version>='3.12'",
-    "pytest-cov; python_version>='3.12'",
-]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+# uv
+
+[tool.uv]
+package = true

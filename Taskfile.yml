@@ -1,49 +1,36 @@
 version: '3'
 
-vars:
-  GITHUB_REPO: makukha/pydantic-file-secrets
+env:
+  COMPOSE_FILE: .dev/compose.yaml
 
 tasks:
 
-  init:
-    desc: Initialize dev environment.
-    cmds:
-      - cd .dev && brew bundle
-      - task: init:python
-      - pyenv install --skip-existing $(pyenv local)
-      - pdm venv create $(pyenv prefix $(pyenv local))
+  # dev environment
 
-  init:python:
+  dev:
+    desc: Enter dev container.
+    cmds:
+      - task: dev:build
+      - docker compose run --service-ports --rm dev
+
+  dev:build:
     internal: true
     sources:
-      - tox.ini
-    vars:
-      PYTHON_VERSIONS:
-        sh: tox --listenvs | sed -e 's/^py\([23]\)\.\{0,1\}\(.*\)-.*/\1.\2/' | sort -mu | tr '\n' ' '
+      - .dev/*
     cmds:
-      - cmd: pyenv install --skip-existing {{.ITEM}}
-        for: {var: PYTHON_VERSIONS}
+      - docker compose build
+
+  # dev commands
 
   install:
-    desc: Install dev python environment.
+    desc: Install package system-wide.
     cmds:
-      - task: dependencies:lock
-      - pdm install --check --dev
-
-  # dependencies lock in PDM is slow, run only when pyproject.toml changes
-  dependencies:lock:
-    internal: true
-    sources:
-      - pyproject.toml
-    generates:
-      - pdm.lock
-    cmds:
-      - pdm lock --update-reuse
+      - uv pip install --system -e .
 
   lint:
     desc: Run linters.
     cmds:
-      - pdm run mypy src
+      - mypy src
       - ruff check
       - ruff format --check
 
@@ -52,41 +39,34 @@ tasks:
     cmds:
       - ruff format
 
+  version:
+    desc: Bump project version. Use task version -- patch|minor|major|...
+    cmds:
+      - bump-my-version bump {{.CLI_ARGS}}
+
+  release:
+    desc: Publish package on PyPi.
+    preconditions:
+      - test $(git rev-parse --abbrev-ref HEAD) = main
+    cmds:
+      - rm -rf dist
+      - uv build
+      - uv publish
+
+  # dev testing
+
   test:
     desc: Run tests.
-    deps: [install]
     cmds:
       - tox run
 
   test:main:
     desc: Run tests in main environment.
-    deps: [install]
     cmds:
       - tox run -m main
 
-  test:pdb:
+  test:debug:
     desc: Run tests and open debugger on errors.
     deps: [install]
     cmds:
-      - pdm run pytest --pdb {{.CLI_ARGS}}
-
-  version:
-    desc: Bump project version. Use task version -- patch|minor|major|...
-    cmds:
-      - pdm run bump-my-version bump {{.CLI_ARGS}}
-
-  publish:
-    desc: Publish package on PyPi.
-    preconditions:
-      - test $(git rev-parse --abbrev-ref HEAD) = main
-    cmds:
-      - pdm publish
-
-  scorecard:
-    desc: Update security scorecard
-    vars:
-      GITHUB_TOKEN: {sh: keyring get token.github.caseutil scorecard}
-    env:
-      GITHUB_TOKEN: '{{.GITHUB_TOKEN}}'
-    cmds:
-      - scorecard --repo={{.GITHUB_REPO}}
+      - pytest --pdb {{.CLI_ARGS}}

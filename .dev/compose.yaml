@@ -1,0 +1,10 @@
+services:
+  dev:
+    build:
+      context: ..
+      dockerfile: .dev/Dockerfile
+    command: bash -c 'task --list; zsh -i'
+    stdin_open: true
+    tty: true
+    volumes:
+      - ..:/project
