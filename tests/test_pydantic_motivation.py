@@ -2,6 +2,8 @@
 These tests show that nested secrets problem exists.
 """
 
+from typing import Union
+
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import pytest
@@ -10,11 +12,11 @@ import pytest
 def test_delimited_name_fails(monkeypatch, secrets_dir):
     class DbSettings(BaseModel):
         user: str
-        password: str | None = None
+        password: Union[str, None] = None
 
     class Settings(BaseSettings):
         db: DbSettings
-        app_key: str | None = None
+        app_key: Union[str, None] = None
         model_config = SettingsConfigDict(
             secrets_dir=secrets_dir,
             env_nested_delimiter='__',
@@ -34,11 +36,11 @@ def test_delimited_name_fails(monkeypatch, secrets_dir):
 def test_pure_name_fails(monkeypatch, secrets_dir):
     class DbSettings(BaseModel):
         user: str
-        password: str | None = None
+        password: Union[str, None] = None
 
     class Settings(BaseSettings):
         db: DbSettings
-        app_key: str | None = None
+        app_key: Union[str, None] = None
         model_config = SettingsConfigDict(
             secrets_dir=secrets_dir,
             env_nested_delimiter='__',
@@ -58,11 +60,11 @@ def test_pure_name_fails(monkeypatch, secrets_dir):
 def test_subdir_fails(monkeypatch, secrets_dir):
     class DbSettings(BaseModel):
         user: str
-        password: str | None = None
+        password: Union[str, None] = None
 
     class Settings(BaseSettings):
         db: DbSettings
-        app_key: str | None = None
+        app_key: Union[str, None] = None
         model_config = SettingsConfigDict(
             secrets_dir=secrets_dir,
             env_nested_delimiter='__',

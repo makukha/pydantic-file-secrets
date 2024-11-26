@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "pydantic-file-secrets"
-dynamic = ["version"]
+version = "0.3.0"
 description = """Use file secrets in nested Pydantic Settings models, \
     drop-in replacement for SecretsSettingsSource.
 """
@@ -41,7 +41,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "pydantic-settings>=2.0",
+    "pydantic-settings>=2.2",
 ]
 
 [project.urls]
@@ -56,8 +56,9 @@ Source = "https://github.com/makukha/pydantic-file-secrets"
 current_version = "0.3.0"
 allow_dirty = true
 files = [
-  {filename = "src/pydantic_file_secrets/__version__.py"},
+  {filename = "pyproject.toml"},
   {filename = "README.md"},
+  {filename = "src/pydantic_file_secrets/__version__.py"},
 ]
 
 # ruff

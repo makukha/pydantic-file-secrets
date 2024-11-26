@@ -1,16 +1,16 @@
 from functools import reduce
 import os
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Dict, List, Literal, Type, Union
 import warnings
 
+import pydantic_settings
 from pydantic_settings import (
     BaseSettings,
     EnvSettingsSource,
     SecretsSettingsSource,
-    SettingsError,
 )
-from pydantic_settings.sources import parse_env_vars
+from pydantic_settings.sources import SettingsError, parse_env_vars
 from pydantic_settings.utils import path_type_label
 
 from .__version__ import __version__
@@ -19,20 +19,23 @@ from .__version__ import __version__
 __all__ = ['__version__', 'FileSecretsSettingsSource']
 
 
+PS_VERSION = pydantic_settings.__version__
+
+
 class FileSecretsSettingsSource(EnvSettingsSource):
     def __init__(
         self,
-        file_secret_settings: SecretsSettingsSource | type[BaseSettings],
-        secrets_dir: str | Path | list[str | Path] | None = None,
-        secrets_dir_missing: Literal['ok', 'warn', 'error'] | None = None,
-        secrets_dir_max_size: int | None = None,
-        secrets_case_sensitive: bool | None = None,
-        secrets_prefix: str | None = None,
-        secrets_nested_delimiter: str | None = None,
-        secrets_nested_subdir: bool | None = None,
+        file_secret_settings: Union[SecretsSettingsSource, Type[BaseSettings]],
+        secrets_dir: Union[str, Path, List[Union[str, Path]], None] = None,
+        secrets_dir_missing: Union[Literal['ok', 'warn', 'error'], None] = None,
+        secrets_dir_max_size: Union[int, None] = None,
+        secrets_case_sensitive: Union[bool, None] = None,
+        secrets_prefix: Union[str, None] = None,
+        secrets_nested_delimiter: Union[str, None] = None,
+        secrets_nested_subdir: Union[bool, None] = None,
         # args for compatibility with SecretsSettingsSource, don't use directly
-        case_sensitive: bool | None = None,
-        env_prefix: str | None = None,
+        case_sensitive: Union[bool, None] = None,
+        env_prefix: Union[str, None] = None,
     ) -> None:
         # We allow the first argument to be settings_cls like original
         # SecretsSettingsSource. However, it is recommended to pass
@@ -115,7 +118,11 @@ class FileSecretsSettingsSource(EnvSettingsSource):
             env_nested_delimiter=self.secrets_nested_delimiter,
             env_ignore_empty=False,  # match SecretsSettingsSource behaviour
             env_parse_none_str=None,  # match SecretsSettingsSource behaviour
-            env_parse_enums=True,  # match SecretsSettingsSource behaviour
+            **(
+                {'env_parse_enums': True}  # match SecretsSettingsSource behaviour
+                if PS_VERSION >= '2.3'
+                else {}
+            )
         )
         self.env_parse_none_str = None  # update manually because of None
 
@@ -124,7 +131,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
             self.env_vars = {}
         else:
             secrets = reduce(
-                lambda d1, d2: d1 | d2,
+                lambda d1, d2: dict((*d1.items(), *d2.items())),
                 (self.load_secrets(p) for p in self.secrets_paths),
             )
             self.env_vars = parse_env_vars(
@@ -136,18 +143,17 @@ class FileSecretsSettingsSource(EnvSettingsSource):
 
     def validate_secrets_path(self, path: Path) -> None:
         if not path.exists():
-            match self.secrets_dir_missing:
-                case 'ok':
-                    pass
-                case 'warn':
-                    warnings.warn(f'directory "{path}" does not exist')
-                case 'error':
-                    raise SettingsError(f'directory "{path}" does not exist')
-                case _:
-                    raise SettingsError(
-                        f'invalid secrets_dir_missing value: '
-                        f'{self.secrets_dir_missing}'
-                    )
+            if self.secrets_dir_missing == 'ok':
+                pass
+            elif self.secrets_dir_missing == 'warn':
+                warnings.warn(f'directory "{path}" does not exist')
+            elif self.secrets_dir_missing == 'error':
+                raise SettingsError(f'directory "{path}" does not exist')
+            else:
+                raise SettingsError(
+                    f'invalid secrets_dir_missing value: '
+                    f'{self.secrets_dir_missing}'
+                )
         else:
             if not path.is_dir():
                 raise SettingsError(
@@ -163,7 +169,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
                 )
 
     @staticmethod
-    def load_secrets(path: Path) -> dict[str, str]:
+    def load_secrets(path: Path) -> Dict[str, str]:
         return {
             str(p.relative_to(path)): p.read_text().strip()
             for p in path.glob('**/*')

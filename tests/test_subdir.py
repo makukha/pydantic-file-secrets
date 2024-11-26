@@ -1,4 +1,4 @@
-from pydantic_settings import SettingsError
+from pydantic_settings.sources import SettingsError
 import pytest
 
 

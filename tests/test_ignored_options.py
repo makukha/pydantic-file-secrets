@@ -3,7 +3,8 @@ These tests show that the behaviour of FileSecretsSettingsSource matches
 SecretsSettingsSource for options env_ignore_empty, env_parse_none_str, env_parse_enums.
 """
 
-from enum import StrEnum
+from enum import Enum
+from typing import Tuple, Type, Union
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import pytest
@@ -11,21 +12,21 @@ import pytest
 from pydantic_file_secrets import FileSecretsSettingsSource
 
 
-class SomeEnum(StrEnum):
+class SomeEnum(str, Enum):
     TEST = 'test'
 
 
 class Settings(BaseSettings):
-    key_empty: str | None = None
-    key_none: str | None = None
-    key_enum: SomeEnum | None = None
+    key_empty: Union[str, None] = None
+    key_none: Union[str, None] = None
+    key_enum: Union[SomeEnum, None] = None
 
 
 class SettingsPairMaker:
     def __call__(
         self,
         model_config: SettingsConfigDict,
-    ) -> tuple[type[Settings], type[Settings]]:
+    ) -> Tuple[Type[Settings], Type[Settings]]:
         class SettingsSSS(Settings):  # SecretsSettingsSource
             pass
 

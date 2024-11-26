@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Tuple, Type, Union
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -12,19 +13,19 @@ from pydantic_file_secrets import FileSecretsSettingsSource
 
 class DbSettings(BaseModel):
     user: str
-    password: str | None = None
+    password: Union[str, None] = None
 
 
 class Settings(BaseSettings):
     db: DbSettings
-    app_key: str | None = None
+    app_key: Union[str, None] = None
 
 
 class SettingsMaker:
     def __call__(
         self,
-        model_config: SettingsConfigDict | dict | None,
-    ) -> type[Settings]:
+        model_config: Union[SettingsConfigDict, dict, None],
+    ) -> Type[Settings]:
         class TestSettings(Settings):
             @classmethod
             def settings_customise_sources(
@@ -53,8 +54,8 @@ def settings_model() -> SettingsMaker:
 # secrets_dir
 
 
-class SecretsDir(Path):
-    def add_files(self, *files: tuple[str, str]) -> None:
+class SecretsDir(type(Path())):
+    def add_files(self, *files: Tuple[str, str]) -> None:
         for path, content in files:
             f = self / path
             f.parent.mkdir(parents=True, exist_ok=True)  # allow child dirs in path

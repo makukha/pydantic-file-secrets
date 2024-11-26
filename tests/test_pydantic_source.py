@@ -3,13 +3,13 @@ These tests show that the interface of original SecretsSettingsSource
 declares features that are not working.
 """
 
-from enum import StrEnum
+from enum import Enum
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 def test_not_working_env_ignore_empty(secrets_dir):
-    class TestEnum(StrEnum):
+    class TestEnum(str, Enum):
         TEST = 'test'
 
     class Settings(BaseSettings):
