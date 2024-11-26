@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "pydantic-file-secrets"
-version = "0.3.0"
+version = "0.4.0"
 description = """Use file secrets in nested Pydantic Settings models, \
     drop-in replacement for SecretsSettingsSource.
 """
@@ -53,7 +53,7 @@ Source = "https://github.com/makukha/pydantic-file-secrets"
 # bump-my-version
 
 [tool.bumpversion]
-current_version = "0.3.0"
+current_version = "0.4.0"
 allow_dirty = true
 files = [
   {filename = "pyproject.toml"},
