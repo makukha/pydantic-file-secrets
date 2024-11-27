@@ -11,7 +11,8 @@ tasks:
     desc: Enter dev container.
     cmds:
       - task: dev:build
-      - docker compose run --service-ports --rm dev
+      - docker compose run --rm dev
+      - defer: docker compose down
 
   dev:build:
     internal: true

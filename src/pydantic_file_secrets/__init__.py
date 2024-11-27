@@ -122,7 +122,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
                 {'env_parse_enums': True}  # match SecretsSettingsSource behaviour
                 if PS_VERSION >= '2.3'
                 else {}
-            )
+            ),
         )
         self.env_parse_none_str = None  # update manually because of None
 
@@ -151,8 +151,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
                 raise SettingsError(f'directory "{path}" does not exist')
             else:
                 raise SettingsError(
-                    f'invalid secrets_dir_missing value: '
-                    f'{self.secrets_dir_missing}'
+                    f'invalid secrets_dir_missing value: {self.secrets_dir_missing}'
                 )
         else:
             if not path.is_dir():
