@@ -201,7 +201,7 @@ However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/ma
 Tests are run for all minor Pydantic Settings v2 versions and all minor Python 3 versions supported by Pydantic Settings:
 
 * Python v. 3.{8,9,10,11,12,13}
-* pydantic-settings v. 2.{2,3,4,5,6}
+* pydantic-settings v. 2.{2,3,4,5,6,7}
 
 
 ## History
