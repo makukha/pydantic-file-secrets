@@ -2,16 +2,20 @@
 
 > Use file secrets in nested [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) models, drop-in replacement for `SecretsSettingsSource`.
 
-![GitHub License](https://img.shields.io/github/license/makukha/pydantic-file-secrets)
-[![Tests](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/v0.4.1/docs/badge/tests.svg)](https://github.com/makukha/pydantic-file-secrets)
-[![Coverage](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/v0.4.1/docs/badge/coverage.svg)](https://github.com/makukha/pydantic-file-secrets)
-[![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v1.json)](https://github.com/astral-sh/ruff)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) \
-[![pypi](https://img.shields.io/pypi/v/pydantic-file-secrets.svg#0.4.1)](https://pypi.python.org/pypi/pydantic-file-secrets)
-[![versions](https://img.shields.io/pypi/pyversions/pydantic-file-secrets.svg)](https://pypi.org/project/pydantic-file-secrets)
-[![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://pydantic.dev) \
-[![PyPI - Downloads](https://img.shields.io/pypi/dw/pydantic-file-secrets)](https://pypistats.org/packages/pydantic-file-secrets)
-
+<!-- docsub: begin -->
+<!-- docsub: include docs/badges.md -->
+[![license](https://img.shields.io/github/license/makukha/pydantic-file-secrets.svg)](https://github.com/makukha/pydantic-file-secrets/blob/main/LICENSE)
+[![pypi](https://img.shields.io/pypi/v/pydantic-file-secrets.svg#v0.4.1)](https://pypi.org/project/pydantic-file-secrets)
+[![python versions](https://img.shields.io/pypi/pyversions/pydantic-file-secrets.svg)](https://pypi.org/project/pydantic-file-secrets)
+[![tests](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/v0.4.1/docs/img/badge/tests.svg)](https://github.com/makukha/pydantic-file-secrets)
+[![coverage](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/v0.4.1/docs/img/badge/coverage.svg)](https://github.com/makukha/pydantic-file-secrets)
+[![pypi downloads](https://img.shields.io/pypi/dw/pydantic-file-secrets)](https://pypistats.org/packages/pydantic-file-secrets)
+[![tested with multipython](https://img.shields.io/badge/tested_with-multipython-x)](https://github.com/makukha/multipython)
+[![uses docsub](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/makukha/docsub/refs/heads/main/docs/badge/v1.json)](https://github.com/makukha/docsub)
+[![mypy](https://img.shields.io/badge/type_checked-mypy-%231674b1)](http://mypy.readthedocs.io)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/ruff)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+<!-- docsub: end -->
 
 This project is inspired by discussions in Pydantic Settings and solves problems in issues [#30](https://github.com/pydantic/pydantic-settings/issues/30), [#154](https://github.com/pydantic/pydantic-settings/issues/154).
 
@@ -216,3 +220,8 @@ Tests are run for all minor Pydantic Settings v2 versions and all minor Python 3
 ## License
 
 [MIT License](https://github.com/makukha/pydantic-file-secrets/blob/main/LICENSE)
+
+## Changelog
+
+* [Project changelog](https://github.com/makukha/pydantic-file-secrets/tree/main/CHANGELOG.md)
+* [GitHub release notes](https://github.com/makukha/pydantic-file-secrets/releases)

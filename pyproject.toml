@@ -4,10 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pydantic-file-secrets"
-version = "0.4.1"
-description = """Use file secrets in nested Pydantic Settings models, \
-    drop-in replacement for SecretsSettingsSource.
-"""
+description = "Use file secrets in nested Pydantic Settings models, drop-in replacement for SecretsSettingsSource."
 authors = [
     {name = "Michael Makukha", email = "m.makukha@gmail.com"},
 ]
@@ -39,6 +36,8 @@ classifiers = [
     "Typing :: Typed",
     # see https://pypi.org/classifiers/
 ]
+dynamic = ["version"]
+
 requires-python = ">=3.8"
 dependencies = [
     "pydantic-settings>=2.2",
@@ -72,10 +71,21 @@ tests = [
 current_version = "0.4.1"
 allow_dirty = true
 files = [
-  {filename = "pyproject.toml"},
-  {filename = "README.md"},
+  {filename = "docs/badges.md"},
   {filename = "src/pydantic_file_secrets/__version__.py"},
 ]
+
+# hatch
+
+[tool.hatch.build]
+exclude = [
+  ".jist",
+  "Justfile",
+  "Makefile",
+  "compose.yml",
+]
+[tool.hatch.version]
+path = "src/pydantic_file_secrets/__version__.py"
 
 # ruff
 
