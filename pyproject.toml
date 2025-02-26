@@ -58,7 +58,7 @@ dev = [
   "ruff>=0.9 ; python_version >= '3.12'",
   "scriv>=1.5 ; python_version >= '3.12'",
 ]
-tests = [
+testing = [
   "mypy>=1.4",  # last minor version supporting Python 3.7
   "pytest>=8.3 ; python_version ~= '3.13'",
   "pytest-cov>=6.0 ; python_version ~= '3.13'",

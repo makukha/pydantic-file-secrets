@@ -1,3 +1,0 @@
-bump-my-version
-mypy
-ruff

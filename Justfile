@@ -27,6 +27,7 @@ lint:
 # run tests
 [group('develop')]
 test *toxargs: build
+    make tests/requirements.txt
     time docker compose run --rm -it tox \
         {{ if toxargs == "" { "run-parallel" } else { "run" } }} \
          --installpkg="$(find dist -name '*.whl')" {{toxargs}}
