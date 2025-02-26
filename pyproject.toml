@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "pydantic-file-secrets"
 version = "0.4.1"
@@ -46,6 +50,22 @@ Changelog = "https://github.com/makukha/pydantic-file-secrets/releases"
 Issues = "https://github.com/makukha/pydantic-file-secrets/issues"
 Source = "https://github.com/makukha/pydantic-file-secrets"
 
+[dependency-groups]
+dev = [
+  "bump-my-version>=0.32 ; python_version >= '3.12'",
+  "docsub>=0.9 ; python_version >= '3.12'",
+  "genbadge[tests,coverage]>=1.1 ; python_version >= '3.12'",
+  "mypy>=1.15 ; python_version >= '3.12'",
+  "ruff>=0.9 ; python_version >= '3.12'",
+  "scriv>=1.5 ; python_version >= '3.12'",
+]
+tests = [
+  "mypy>=1.4",  # last minor version supporting Python 3.7
+  "pytest>=8.3 ; python_version ~= '3.13'",
+  "pytest-cov>=6.0 ; python_version ~= '3.13'",
+  "pytest-sugar>=1.0 ; python_version ~= '3.13'",
+]
+
 # bump-my-version
 
 [tool.bumpversion]
@@ -84,8 +104,3 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
-
-# uv
-
-[tool.uv]
-package = true
