@@ -104,3 +104,15 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
+
+# scriv
+
+[tool.scriv]
+categories = ["Security ⚠️", "Breaking 🔥", "Removed 💨", "Deprecated ❄️", "Added 🌿", "Changed", "Fixed", "Docs", "Misc"]
+entry_title_template = "[{{ version }}](https://github.com/makukha.pydantic-file-secrets/releases/tag/v{{ version }}) — {{ date.strftime('%Y-%m-%d') }}"
+ghrel_template = "command: just gh-issue-title"  # abuse config option to pass default message
+format = "md"
+fragment_directory = "NEWS.d"
+md_header_level = "2"
+new_fragment_template = "file: NEWS.d/.new_fragment.md.j2"
+version = "command: just version"
