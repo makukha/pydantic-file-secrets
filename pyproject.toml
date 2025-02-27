@@ -10,6 +10,11 @@ authors = [
 ]
 readme = "README.md"
 license = {text = "MIT"}
+urls.Documentation = "https://github.com/makukha/pydantic-file-secrets#readme"
+urls.Homepage = "https://github.com/makukha/pydantic-file-secrets"
+urls.Repository = "https://github.com/makukha/pydantic-file-secrets"
+urls.Issues = "https://github.com/makukha/pydantic-file-secrets/issues"
+urls.Changelog = "https://github.com/makukha/pydantic-file-secrets/blob/main/CHANGELOG.md"
 keywords = [
     "python", "python3",
     "pydantic", "pydantic-v2", "pydantic-settings",
@@ -31,7 +36,6 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development",
     "Typing :: Typed",
     # see https://pypi.org/classifiers/
@@ -42,12 +46,6 @@ requires-python = ">=3.8"
 dependencies = [
     "pydantic-settings>=2.2,<3",
 ]
-
-[project.urls]
-Documentation = "https://github.com/makukha/pydantic-file-secrets#readme"
-Changelog = "https://github.com/makukha/pydantic-file-secrets/releases"
-Issues = "https://github.com/makukha/pydantic-file-secrets/issues"
-Source = "https://github.com/makukha/pydantic-file-secrets"
 
 [dependency-groups]
 dev = [
@@ -87,31 +85,30 @@ exclude = [
 [tool.hatch.version]
 path = "src/pydantic_file_secrets/__version__.py"
 
+# mypy
+
+[tool.mypy]
+incremental = false
+python_version = "3.9"
+strict = true
+[[tool.mypy.overrides]]
+module = "tests.*"
+allow_incomplete_defs = true
+allow_untyped_defs = true
+
 # ruff
 
 [tool.ruff]
-line-length = 88
-indent-width = 4
-target-version = "py313"
-
+exclude = [".jist"]
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "S"]
-ignore = []
-fixable = ["ALL"]
-unfixable = []
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-
-[tool.ruff.lint.extend-per-file-ignores]
-"tests/**/*.py" = [
-    "S101", # asserts allowed in tests
-    "ARG", # unused function args (fixtures)
+select = ["E4", "E7", "E9", "F", "B", "S"]
+per-file-ignores."tests/**/*.py" = [
+  "S101",  # Use of `assert` detected
+  "S102",  # Use of `exec` detected
+  "S603",  # `subprocess` call: check for execution of untrusted input
 ]
-
 [tool.ruff.format]
 quote-style = "single"
-indent-style = "space"
-skip-magic-trailing-comma = false
-line-ending = "auto"
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
 
