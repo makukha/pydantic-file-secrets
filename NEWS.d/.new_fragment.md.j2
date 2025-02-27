@@ -1,0 +1,6 @@
+{% for cat in config.categories -%}
+# ***{{ cat }}***
+{% endfor %}
+<!-- Remove unused category headings and this note -->
+
+- {{ config.ghrel_template }}{# abuse config option to pass default message #}

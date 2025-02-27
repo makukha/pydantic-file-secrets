@@ -146,7 +146,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
             if self.secrets_dir_missing == 'ok':
                 pass
             elif self.secrets_dir_missing == 'warn':
-                warnings.warn(f'directory "{path}" does not exist')
+                warnings.warn(f'directory "{path}" does not exist', stacklevel=2)
             elif self.secrets_dir_missing == 'error':
                 raise SettingsError(f'directory "{path}" does not exist')
             else:

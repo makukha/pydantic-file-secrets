@@ -8,9 +8,11 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{ini,json,toml,yml,yaml}]
+[*.{ini,html,json,md,rst,sh,toml,yml,yaml}]
 indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
 
+[Makefile]
+indent_style = tab

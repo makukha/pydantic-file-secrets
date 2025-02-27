@@ -1,6 +1,9 @@
+_build/
+.coverage
 dist/
-*.egg-info/
+*.pyc
 __pycache__/
-.task/
-tmp/
+.python-version
+.tmp/
 .tox/
+.venv/
