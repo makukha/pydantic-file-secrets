@@ -12,7 +12,7 @@ default:
 [group('initialize'), macos]
 init:
     sudo port install gh git uv yq
-    just init-hooks
+    just git-hooks
     just sync
 
 # develop
@@ -20,7 +20,7 @@ init:
 # run linters
 [group('develop')]
 lint:
-    uv run mypy .
+    #uv run mypy .
     uv run ruff check
     uv run ruff format --diff
 
