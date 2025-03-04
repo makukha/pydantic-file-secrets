@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union
 import warnings
 
-if TYPE_CHECKING:
-    from typing_extensions import TypeAlias
+if TYPE_CHECKING:  # pragma: no cover
+    from typing_extensions import TypeAlias  # noqa: F401  # used in type hint
 
 import pydantic_settings
 from pydantic_settings import (
@@ -25,7 +25,7 @@ __all__ = ['FileSecretsSettingsSource']
 SECRETS_DIR_MAX_SIZE = 16 * 2**20  # 16 MiB seems to be a reasonable default
 PS_VERSION = pydantic_settings.__version__
 
-PathType: TypeAlias = Union[str, Path]
+PathType = Union[str, Path]  # type: TypeAlias
 
 
 class FileSecretsSettingsSource(EnvSettingsSource):

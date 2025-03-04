@@ -16,7 +16,7 @@ docs/img/badge/%.svg: .tmp/%.xml
 .PHONY: requirements
 requirements: tests/requirements.txt
 tests/requirements.txt: uv.lock
-	uv export --frozen --no-emit-project --only-group testing > $@
+	uv export --frozen --no-emit-project --no-hashes --only-group testing > $@
 
 .PHONY: docs
 docs: README.md
