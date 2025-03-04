@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "pydantic-file-secrets"
 description = "Use file secrets in nested Pydantic Settings models, drop-in replacement for SecretsSettingsSource."
 authors = [
-    {name = "Michael Makukha", email = "m.makukha@gmail.com"},
+  {name = "Michael Makukha", email = "m.makukha@gmail.com"},
 ]
 readme = "README.md"
 license = {text = "MIT"}
@@ -16,35 +16,35 @@ urls.Repository = "https://github.com/makukha/pydantic-file-secrets"
 urls.Issues = "https://github.com/makukha/pydantic-file-secrets/issues"
 urls.Changelog = "https://github.com/makukha/pydantic-file-secrets/blob/main/CHANGELOG.md"
 keywords = [
-    "python", "python3",
-    "pydantic", "pydantic-v2", "pydantic-settings",
-    "settings", "configuration", "config", "validation",
-    "secrets", "docker-secret", "docker", "file-secrets",
+  "python", "python3",
+  "pydantic", "pydantic-v2", "pydantic-settings",
+  "settings", "configuration", "config", "validation",
+  "secrets", "docker-secret", "docker", "file-secrets",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Framework :: Pydantic",
-    "Framework :: Pydantic :: 2",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Topic :: Software Development",
-    "Typing :: Typed",
-    # see https://pypi.org/classifiers/
+  # see https://pypi.org/classifiers/
+  "Development Status :: 4 - Beta",
+  "Framework :: Pydantic",
+  "Framework :: Pydantic :: 2",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Software Development",
+  "Typing :: Typed",
 ]
 dynamic = ["version"]
 
 requires-python = ">=3.8"
 dependencies = [
-    "pydantic-settings>=2.2,<3",
+  "pydantic-settings>=2.2,<3",
 ]
 
 [dependency-groups]
@@ -57,6 +57,7 @@ dev = [
   "scriv>=1.5 ; python_version >= '3.12'",
 ]
 testing = [
+  "dirlay>=0.4.0,<0.5.0",
   "mypy>=1.14",  # last version supporting Python 3.8
   "pytest>=8.3",
   "pytest-cov>=6.0 ; python_version >= '3.13'",

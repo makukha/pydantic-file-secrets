@@ -1,15 +1,23 @@
-def test_strip_whitespace(settings_model, monkeypatch, secrets_dir):
+from dirlay import Dir
+
+from tests.sample import AppSettings
+
+
+def test_secrets_dir_as_arg(monkeypatch, tmp_path):
     monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files(
-        ('dir1/app_key', 'secret1'),
-        ('dir2/db___password', 'secret2'),
-    )
-    Settings = settings_model(
-        model_config=dict(
+    secrets = Dir() | {
+        'app_key': 'secret1',
+        'db__passwd': 'secret2',
+    }
+
+    class Settings(AppSettings):
+        model_config = dict(
             env_nested_delimiter='__',
-            secrets_nested_delimiter='___',
-        ),
-    )
-    conf = Settings(_secrets_dir=[secrets_dir / 'dir1', secrets_dir / 'dir2'])
-    assert conf.app_key == 'secret1'
-    assert conf.db.password == 'secret2'  # noqa: S105
+            secrets_nested_delimiter='__',
+        )
+
+    with secrets.mktree(tmp_path):
+        assert Settings(_secrets_dir=tmp_path).model_dump() == {
+            'app_key': 'secret1',
+            'db': {'user': 'user', 'passwd': 'secret2'},
+        }
