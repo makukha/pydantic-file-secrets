@@ -9,3 +9,4 @@
 # ***Misc***
 
 - Started using [dirlay](https://github.com/makukha/dirlay) for testing
+- Tested with pydantic-settings v2.8

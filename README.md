@@ -200,12 +200,12 @@ However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/ma
 
 ## Testing
 
-100% test coverage [is ensured](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) for latest stable Python release (3.12).
+100% test coverage [is ensured](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) for latest stable Python release (3.13).
 
 Tests are run for all minor Pydantic Settings v2 versions and all minor Python 3 versions supported by Pydantic Settings:
 
-* Python v. 3.{8,9,10,11,12,13}
-* pydantic-settings v. 2.{2,3,4,5,6,7}
+* Python 3.{8,9,10,11,12,13}
+* pydantic-settings v2.{2,3,4,5,6,7,8}
 
 
 ## History
