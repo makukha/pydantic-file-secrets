@@ -1,0 +1,17 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: ad46fe2
+_src_path: gh:makukha/copier-python
+author_email: m.makukha@gmail.com
+author_name: Michael Makukha
+copyright_year: 2024
+docs: github_readme
+docs_url: https://github.com/makukha/pydantic-file-secrets#readme
+github_slug: makukha/pydantic-file-secrets
+github_url: https://github.com/makukha/pydantic-file-secrets
+module_name: pydantic_file_secrets
+project_name: pydantic-file-secrets
+project_version: 0.4.1
+pypi_package_name: pydantic-file-secrets
+pypi_url: https://pypi.org/project/pydantic-file-secrets
+python_version: 3.13.2
+python_version_minor: '3.13'

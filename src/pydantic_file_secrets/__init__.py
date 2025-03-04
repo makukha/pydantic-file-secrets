@@ -13,10 +13,10 @@ from pydantic_settings import (
 from pydantic_settings.sources import SettingsError, parse_env_vars
 from pydantic_settings.utils import path_type_label
 
-from .__version__ import __version__
+from .__version__ import __version__ as __version__
 
 
-__all__ = ['__version__', 'FileSecretsSettingsSource']
+__all__ = ['FileSecretsSettingsSource']
 
 
 SECRETS_DIR_MAX_SIZE = 16 * 2**20  # 16 MiB seems to be a reasonable default
@@ -41,8 +41,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         # We allow the first argument to be settings_cls like original
         # SecretsSettingsSource. However, it is recommended to pass
         # SecretsSettingsSource instance instead (as it is shown in usage examples),
-        # otherwise `_secrets_dir` arg passed to Settings() constructor
-        # will be ignored.
+        # otherwise `_secrets_dir` arg passed to Settings() constructor will be ignored.
         settings_cls: type[BaseSettings] = getattr(
             file_secret_settings,
             'settings_cls',

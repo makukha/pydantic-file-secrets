@@ -1,0 +1,14 @@
+services:
+
+  tox:
+    image: makukha/multipython:unsafe
+    working_dir: /work
+    entrypoint: tox
+    volumes:
+      - pip_cache:/root/.cache/pip
+      - virtualenv_app_data:/root/.local/share/virtualenv
+      - .:/work
+
+volumes:
+  pip_cache:
+  virtualenv_app_data:

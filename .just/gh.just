@@ -1,31 +1,12 @@
-# get issue id of current GitHub branch
-[group('github')]
-gh-issue-id:
-    @git branch --show-current | cut -d- -f1
-
-# get issue title of current GitHub branch
-[group('github')]
-gh-issue-title:
-    @GH_PAGER=cat gh issue view "$(just gh-issue-id)" --json title -t '{{{{.title}}'
-
 # create GitHub pull request
 [group('github')]
-gh-pr:
+gh-create-pr:
     just gh-push
     gh pr create --web -t "$(just gh-issue-title)"
 
-# push all GitHub commits after ensuring the clean state
-[group('github')]
-gh-push:
-    # ensure clean state
-    git diff --exit-code
-    git diff --cached --exit-code
-    git ls-files --other --exclude-standard --directory
-    git push
-
 # create GitHub release
 [group('github')]
-gh-release:
+gh-create-release:
     #!/usr/bin/env bash
     set -euo pipefail
     if [ "$(git branch --show-current)" != "main" ]; then
@@ -37,6 +18,25 @@ gh-release:
     git push origin tag "$tag"
     gh release create --draft -t "$tag — $(date -Idate)" --generate-notes "$tag"
 
+# get issue id of current GitHub branch
+[group('github')]
+gh-issue-id:
+    @git branch --show-current | cut -d- -f1
+
+# get issue title of current GitHub branch
+[group('github')]
+gh-issue-title:
+    @GH_PAGER=cat gh issue view "$(just gh-issue-id)" --json title -t '{{{{.title}}'
+
+# push all GitHub commits after ensuring the clean state
+[group('github')]
+gh-push:
+    # ensure clean state
+    git diff --exit-code
+    git diff --cached --exit-code
+    git ls-files --other --exclude-standard --directory
+    git push
+
 # get "org/name" of current GitHub repository
 [group('github')]
 gh-repo-name:
@@ -47,7 +47,13 @@ gh-repo-name:
 gh-repo-upd:
     #!/usr/bin/env bash
     set -euo pipefail
-    gh repo edit -d "$(yq -r .project.description pyproject.toml)"
+    # update description
+    gh repo edit -d "$(yq .project.description pyproject.toml)"
+    # update homepage
+    homepage="$(yq .project.urls.Documentation pyproject.toml)"
+    if [[ $homepage != "https://github.com"* ]]; then
+      gh repo edit -h "$homepage"
+    fi
     # delete old topics
     old_topics="$(GH_PAGER=cat gh api repos/$(just gh-repo-name) | yq -r '.topics | join(" ")')"
     if [ -n "$old_topics" ]; then
