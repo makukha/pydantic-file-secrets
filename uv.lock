@@ -1,11 +1,9 @@
 version = 1
 requires-python = ">=3.8"
 resolution-markers = [
-    "python_full_version >= '3.13' and python_full_version < '4'",
-    "python_full_version >= '4'",
+    "python_full_version >= '3.13'",
     "python_full_version == '3.12.*'",
-    "python_full_version >= '3.9' and python_full_version < '3.12'",
-    "python_full_version < '3.9'",
+    "python_full_version < '3.12'",
 ]
 
 [[package]]
@@ -25,9 +23,8 @@ name = "anyio"
 version = "4.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "idna", marker = "python_full_version >= '3.12'" },
-    { name = "sniffio", marker = "python_full_version >= '3.12'" },
-    { name = "typing-extensions", marker = "python_full_version == '3.12.*'" },
+    { name = "idna", marker = "python_full_version >= '3.13'" },
+    { name = "sniffio", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a3/73/199a98fc2dae33535d6b8e8e6ec01f8c1d76c9adb096c6b7d64823038cde/anyio-4.8.0.tar.gz", hash = "sha256:1d9fe889df5212298c0c0723fa20479d1b94883a2df44bd3897aa91083316f7a", size = 181126 }
 wheels = [
@@ -54,22 +51,22 @@ wheels = [
 
 [[package]]
 name = "bump-my-version"
-version = "0.32.2"
+version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", marker = "python_full_version >= '3.12'" },
-    { name = "httpx", marker = "python_full_version >= '3.12'" },
-    { name = "pydantic", marker = "python_full_version >= '3.12'" },
-    { name = "pydantic-settings", marker = "python_full_version >= '3.12'" },
-    { name = "questionary", marker = "python_full_version >= '3.12'" },
-    { name = "rich", marker = "python_full_version >= '3.12'" },
-    { name = "rich-click", marker = "python_full_version >= '3.12'" },
-    { name = "tomlkit", marker = "python_full_version >= '3.12'" },
-    { name = "wcmatch", marker = "python_full_version >= '3.12'" },
+    { name = "click", marker = "python_full_version >= '3.13'" },
+    { name = "httpx", marker = "python_full_version >= '3.13'" },
+    { name = "pydantic", marker = "python_full_version >= '3.13'" },
+    { name = "pydantic-settings", marker = "python_full_version >= '3.13'" },
+    { name = "questionary", marker = "python_full_version >= '3.13'" },
+    { name = "rich", marker = "python_full_version >= '3.13'" },
+    { name = "rich-click", marker = "python_full_version >= '3.13'" },
+    { name = "tomlkit", marker = "python_full_version >= '3.13'" },
+    { name = "wcmatch", marker = "python_full_version >= '3.13'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b9/4c/535904dd2575b40ba672e333808521a8f93a8e30c5fb0bfb9051813fa17e/bump_my_version-0.32.2.tar.gz", hash = "sha256:fc1c686af66c39c44d2f19c4d29597fcc2f938bc19046b8df26bfa44c93f11c0", size = 1068097 }
+sdist = { url = "https://files.pythonhosted.org/packages/05/3d/037b2ac73264db7d64da8046ce43c6e21cbb8d1306d1eddd3927d11b33b1/bump_my_version-1.0.0.tar.gz", hash = "sha256:cbedf33d2e18d18ee3ad99f73309a75d85707b7a3d42ca96160b5b5b0a2f6104", size = 1101219 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9b/4b/1bc70caa460d41243d30ba02b96ee8e726da679e541231ccc9cff86051bb/bump_my_version-0.32.2-py3-none-any.whl", hash = "sha256:fb93c5a70a2368354bcac4457d22f282dc66a7bd241241f5a4e3d49002dece36", size = 57614 },
+    { url = "https://files.pythonhosted.org/packages/37/d7/ecfcd3f5bf3af712339aaed186dbdd1c4ba6571a9f2e10d90a07806fba92/bump_my_version-1.0.0-py3-none-any.whl", hash = "sha256:f90324a8cde98c5ff09632eada4ba847096817463a37b6fa9b8899ec4192b45d", size = 58549 },
 ]
 
 [[package]]
@@ -173,7 +170,7 @@ name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
+    { name = "colorama", marker = "python_full_version >= '3.13' and sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593 }
 wheels = [
@@ -185,7 +182,7 @@ name = "click-log"
 version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", marker = "python_full_version >= '3.12'" },
+    { name = "click", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/32/32/228be4f971e4bd556c33d52a22682bfe318ffe57a1ddb7a546f347a90260/click-log-0.4.0.tar.gz", hash = "sha256:3970f8570ac54491237bcdb3d8ab5e3eef6c057df29f8c3d1151a51a9c23b975", size = 9985 }
 wheels = [
@@ -294,14 +291,23 @@ name = "docsub"
 version = "0.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "importloc", marker = "python_full_version >= '3.12'" },
-    { name = "loguru", marker = "python_full_version >= '3.12'" },
-    { name = "rich-click", marker = "python_full_version >= '3.12'" },
-    { name = "typing-extensions", marker = "python_full_version >= '3.12'" },
+    { name = "importloc", marker = "python_full_version >= '3.13'" },
+    { name = "loguru", marker = "python_full_version >= '3.13'" },
+    { name = "rich-click", marker = "python_full_version >= '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e0/24/f9fd358c8a38ff88c22fc2ccd30eccc198054f6fe0917177fb3360ce557a/docsub-0.9.0.tar.gz", hash = "sha256:d6e3e6dd30f0fdcb12ef6f97bc02ccdcfac4f873c78b5e18c0b6c3adf0897d1c", size = 73689 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8e/3d/a9af3d3aafc2aa6f5fb3772333cdf9e077281b7b8b79ef38d9506f037ce2/docsub-0.9.0-py3-none-any.whl", hash = "sha256:69ed0962b9542f589763bd55887ec7378cf2c4c091252d93f30a45a43cc0b7bb", size = 21430 },
+]
+
+[[package]]
+name = "doctestcase"
+version = "0.2.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4f/d3/5778881c0df782a9c8068ca20a58621c5c655afdb76e81db49cfe4aac767/doctestcase-0.2.2.tar.gz", hash = "sha256:bbf908b4d8752885d261b4086d6eb0981d08ff22822ff2daca058619aa20f561", size = 102645 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/83/81/1c6c53597b502245700eb7474e7f4517be483a613fc2aa0652e902384275/doctestcase-0.2.2-py2.py3-none-any.whl", hash = "sha256:81a5bb67d5f549a3575efe46c6c786644bd8cff0ef889843eb0ae25f2eda9c9e", size = 10230 },
 ]
 
 [[package]]
@@ -318,10 +324,10 @@ name = "genbadge"
 version = "1.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", marker = "python_full_version >= '3.12'" },
-    { name = "pillow", marker = "python_full_version >= '3.12'" },
-    { name = "requests", marker = "python_full_version >= '3.12'" },
-    { name = "setuptools", marker = "python_full_version >= '3.12'" },
+    { name = "click", marker = "python_full_version >= '3.13'" },
+    { name = "pillow", marker = "python_full_version >= '3.13'" },
+    { name = "requests", marker = "python_full_version >= '3.13'" },
+    { name = "setuptools", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/8f/fe/aa88fb4cb7af92ad13663027c42c208e7cf99b49ee2b268f0a5ac52d26c6/genbadge-1.1.1.tar.gz", hash = "sha256:12cdaaacbc9e0ea3164bf580cfb87ec61ff17ae0728f09a7f0102f8ab3112f4c", size = 138463 }
 wheels = [
@@ -330,10 +336,10 @@ wheels = [
 
 [package.optional-dependencies]
 coverage = [
-    { name = "defusedxml", marker = "python_full_version >= '3.12'" },
+    { name = "defusedxml", marker = "python_full_version >= '3.13'" },
 ]
 tests = [
-    { name = "defusedxml", marker = "python_full_version >= '3.12'" },
+    { name = "defusedxml", marker = "python_full_version >= '3.13'" },
 ]
 
 [[package]]
@@ -350,8 +356,8 @@ name = "httpcore"
 version = "1.0.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "certifi", marker = "python_full_version >= '3.12'" },
-    { name = "h11", marker = "python_full_version >= '3.12'" },
+    { name = "certifi", marker = "python_full_version >= '3.13'" },
+    { name = "h11", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/6a/41/d7d0a89eb493922c37d343b607bc1b5da7f5be7e383740b4753ad8943e90/httpcore-1.0.7.tar.gz", hash = "sha256:8551cb62a169ec7162ac7be8d4817d561f60e08eaa485234898414bb5a8a0b4c", size = 85196 }
 wheels = [
@@ -363,10 +369,10 @@ name = "httpx"
 version = "0.28.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "anyio", marker = "python_full_version >= '3.12'" },
-    { name = "certifi", marker = "python_full_version >= '3.12'" },
-    { name = "httpcore", marker = "python_full_version >= '3.12'" },
-    { name = "idna", marker = "python_full_version >= '3.12'" },
+    { name = "anyio", marker = "python_full_version >= '3.13'" },
+    { name = "certifi", marker = "python_full_version >= '3.13'" },
+    { name = "httpcore", marker = "python_full_version >= '3.13'" },
+    { name = "idna", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b1/df/48c586a5fe32a0f01324ee087459e112ebb7224f646c0b5023f5e79e9956/httpx-0.28.1.tar.gz", hash = "sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc", size = 141406 }
 wheels = [
@@ -387,7 +393,7 @@ name = "importloc"
 version = "0.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version >= '3.12'" },
+    { name = "typing-extensions", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/98/b4/435ce77fb255e5d341de926bf81ccd2b8defe3a0c604b4f8e82660c6eb8f/importloc-0.3.1.tar.gz", hash = "sha256:2c4fb82bbeb41c176f2a0bb52cc36b1c94fa01fa0a5e6ca2567254cb12648a0d", size = 92831 }
 wheels = [
@@ -408,7 +414,7 @@ name = "jinja2"
 version = "3.1.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "markupsafe", marker = "python_full_version >= '3.12'" },
+    { name = "markupsafe", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/af/92/b3130cbbf5591acf9ade8708c365f3238046ac7cb8ccba6e81abccb0ccff/jinja2-3.1.5.tar.gz", hash = "sha256:8fefff8dc3034e27bb80d67c671eb8a9bc424c0ef4c0826edbff304cceff43bb", size = 244674 }
 wheels = [
@@ -420,8 +426,8 @@ name = "loguru"
 version = "0.7.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "win32-setctime", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
+    { name = "colorama", marker = "python_full_version >= '3.13' and sys_platform == 'win32'" },
+    { name = "win32-setctime", marker = "python_full_version >= '3.13' and sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3a/05/a1dae3dffd1116099471c643b8924f5aa6524411dc6c63fdae648c4f1aca/loguru-0.7.3.tar.gz", hash = "sha256:19480589e77d47b8d85b2c827ad95d49bf31b0dcde16593892eb51dd18706eb6", size = 63559 }
 wheels = [
@@ -433,7 +439,7 @@ name = "markdown-it-py"
 version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "mdurl", marker = "python_full_version >= '3.12'" },
+    { name = "mdurl", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/38/71/3b932df36c1a044d397a1f92d1cf91ee0a503d91e470cbd670aa66b07ed0/markdown-it-py-3.0.0.tar.gz", hash = "sha256:e3f60a94fa066dc52ec76661e37c851cb232d92f9886b15cb560aaada2df8feb", size = 74596 }
 wheels = [
@@ -522,12 +528,12 @@ name = "mypy"
 version = "1.14.1"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version < '3.9'",
+    "python_full_version < '3.12'",
 ]
 dependencies = [
-    { name = "mypy-extensions", marker = "python_full_version < '3.9'" },
-    { name = "tomli", marker = "python_full_version < '3.9'" },
-    { name = "typing-extensions", marker = "python_full_version < '3.9'" },
+    { name = "mypy-extensions", marker = "python_full_version < '3.12'" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.12'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/eb/2c92d8ea1e684440f54fa49ac5d9a5f19967b7b472a281f419e69a8d228e/mypy-1.14.1.tar.gz", hash = "sha256:7ec88144fe9b510e8475ec2f5f251992690fcf89ccb4500b214b4226abcd32d6", size = 3216051 }
 wheels = [
@@ -575,15 +581,12 @@ name = "mypy"
 version = "1.15.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.13' and python_full_version < '4'",
-    "python_full_version >= '4'",
+    "python_full_version >= '3.13'",
     "python_full_version == '3.12.*'",
-    "python_full_version >= '3.9' and python_full_version < '3.12'",
 ]
 dependencies = [
-    { name = "mypy-extensions", marker = "python_full_version >= '3.9'" },
-    { name = "tomli", marker = "python_full_version >= '3.9' and python_full_version < '3.11'" },
-    { name = "typing-extensions", marker = "python_full_version >= '3.9'" },
+    { name = "mypy-extensions", marker = "python_full_version >= '3.12'" },
+    { name = "typing-extensions", marker = "python_full_version >= '3.12'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ce/43/d5e49a86afa64bd3839ea0d5b9c7103487007d728e1293f52525d6d5486a/mypy-1.15.0.tar.gz", hash = "sha256:404534629d51d3efea5c800ee7c42b72a6554d6c400e6a79eafe15d11341fd43", size = 3239717 }
 wheels = [
@@ -730,7 +733,7 @@ name = "prompt-toolkit"
 version = "3.0.50"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "wcwidth", marker = "python_full_version >= '3.12'" },
+    { name = "wcwidth", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a1/e1/bd15cb8ffdcfeeb2bdc215de3c3cffca11408d829e4b8416dcfe71ba8854/prompt_toolkit-3.0.50.tar.gz", hash = "sha256:544748f3860a2623ca5cd6d2795e7a14f3d0e1c3c9728359013f79877fc89bab", size = 429087 }
 wheels = [
@@ -871,17 +874,19 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "bump-my-version", marker = "python_full_version >= '3.12'" },
-    { name = "docsub", marker = "python_full_version >= '3.12'" },
-    { name = "genbadge", extra = ["coverage", "tests"], marker = "python_full_version >= '3.12'" },
-    { name = "mypy", version = "1.15.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-    { name = "ruff", marker = "python_full_version >= '3.12'" },
-    { name = "scriv", marker = "python_full_version >= '3.12'" },
+    { name = "bump-my-version", marker = "python_full_version >= '3.13'" },
+    { name = "docsub", marker = "python_full_version >= '3.13'" },
+    { name = "genbadge", extra = ["coverage", "tests"], marker = "python_full_version >= '3.13'" },
+    { name = "mypy", version = "1.15.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.13'" },
+    { name = "ruff", marker = "python_full_version >= '3.13'" },
+    { name = "scriv", marker = "python_full_version >= '3.13'" },
+    { name = "typing-extensions" },
 ]
 testing = [
     { name = "dirlay" },
-    { name = "mypy", version = "1.14.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
-    { name = "mypy", version = "1.15.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
+    { name = "doctestcase" },
+    { name = "mypy", version = "1.14.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "mypy", version = "1.15.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "pytest" },
     { name = "pytest-cov", marker = "python_full_version >= '3.13'" },
     { name = "pytest-sugar", marker = "python_full_version >= '3.13'" },
@@ -892,19 +897,21 @@ requires-dist = [{ name = "pydantic-settings", specifier = ">=2.2,<3" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bump-my-version", marker = "python_full_version >= '3.12'", specifier = ">=0.32" },
-    { name = "docsub", marker = "python_full_version >= '3.12'", specifier = ">=0.9" },
-    { name = "genbadge", extras = ["tests", "coverage"], marker = "python_full_version >= '3.12'", specifier = ">=1.1" },
-    { name = "mypy", marker = "python_full_version >= '3.12'", specifier = ">=1.15" },
-    { name = "ruff", marker = "python_full_version >= '3.12'", specifier = ">=0.9" },
-    { name = "scriv", marker = "python_full_version >= '3.12'", specifier = ">=1.5" },
+    { name = "bump-my-version", marker = "python_full_version >= '3.13'", specifier = ">=1.0" },
+    { name = "docsub", marker = "python_full_version >= '3.13'", specifier = ">=0.9.0" },
+    { name = "genbadge", extras = ["tests", "coverage"], marker = "python_full_version >= '3.13'", specifier = ">=1.1" },
+    { name = "mypy", marker = "python_full_version >= '3.13'", specifier = ">=1.15" },
+    { name = "ruff", marker = "python_full_version >= '3.13'", specifier = ">=0.9" },
+    { name = "scriv", marker = "python_full_version >= '3.13'", specifier = ">=1.5" },
+    { name = "typing-extensions", specifier = ">=3" },
 ]
 testing = [
     { name = "dirlay", specifier = ">=0.4.0,<0.5.0" },
-    { name = "mypy", specifier = ">=1.14" },
-    { name = "pytest", specifier = ">=8.3" },
-    { name = "pytest-cov", marker = "python_full_version >= '3.13'", specifier = ">=6.0" },
-    { name = "pytest-sugar", marker = "python_full_version >= '3.13'", specifier = ">=1.0" },
+    { name = "doctestcase", specifier = ">=0.2.2" },
+    { name = "mypy", specifier = ">=1" },
+    { name = "pytest", specifier = ">=8" },
+    { name = "pytest-cov", marker = "python_full_version >= '3.13'", specifier = ">=6" },
+    { name = "pytest-sugar", marker = "python_full_version >= '3.13'", specifier = ">=1" },
 ]
 
 [[package]]
@@ -987,7 +994,7 @@ name = "questionary"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "prompt-toolkit", marker = "python_full_version >= '3.12'" },
+    { name = "prompt-toolkit", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a8/b8/d16eb579277f3de9e56e5ad25280fab52fc5774117fb70362e8c2e016559/questionary-2.1.0.tar.gz", hash = "sha256:6302cdd645b19667d8f6e6634774e9538bfcd1aad9be287e743d96cacaf95587", size = 26775 }
 wheels = [
@@ -999,10 +1006,10 @@ name = "requests"
 version = "2.32.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "certifi", marker = "python_full_version >= '3.12'" },
-    { name = "charset-normalizer", marker = "python_full_version >= '3.12'" },
-    { name = "idna", marker = "python_full_version >= '3.12'" },
-    { name = "urllib3", marker = "python_full_version >= '3.12'" },
+    { name = "certifi", marker = "python_full_version >= '3.13'" },
+    { name = "charset-normalizer", marker = "python_full_version >= '3.13'" },
+    { name = "idna", marker = "python_full_version >= '3.13'" },
+    { name = "urllib3", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/63/70/2bf7780ad2d390a8d301ad0b550f1581eadbd9a20f896afe06353c2a2913/requests-2.32.3.tar.gz", hash = "sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760", size = 131218 }
 wheels = [
@@ -1014,8 +1021,8 @@ name = "rich"
 version = "13.9.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "markdown-it-py", marker = "python_full_version >= '3.12'" },
-    { name = "pygments", marker = "python_full_version >= '3.12'" },
+    { name = "markdown-it-py", marker = "python_full_version >= '3.13'" },
+    { name = "pygments", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ab/3a/0316b28d0761c6734d6bc14e770d85506c986c85ffb239e688eeaab2c2bc/rich-13.9.4.tar.gz", hash = "sha256:439594978a49a09530cff7ebc4b5c7103ef57baf48d5ea3184f21d9a2befa098", size = 223149 }
 wheels = [
@@ -1027,9 +1034,9 @@ name = "rich-click"
 version = "1.8.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", marker = "python_full_version >= '3.12'" },
-    { name = "rich", marker = "python_full_version >= '3.12'" },
-    { name = "typing-extensions", marker = "python_full_version >= '3.12'" },
+    { name = "click", marker = "python_full_version >= '3.13'" },
+    { name = "rich", marker = "python_full_version >= '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ea/e3/ff1c715b673ec9e01f4482d8d0edfd9adf891f3630d83e695b38337a3889/rich_click-1.8.6.tar.gz", hash = "sha256:8a2448fd80e3d4e16fcb3815bfbc19be9bae75c9bb6aedf637901e45f3555752", size = 38247 }
 wheels = [
@@ -1066,12 +1073,12 @@ name = "scriv"
 version = "1.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "attrs", marker = "python_full_version >= '3.12'" },
-    { name = "click", marker = "python_full_version >= '3.12'" },
-    { name = "click-log", marker = "python_full_version >= '3.12'" },
-    { name = "jinja2", marker = "python_full_version >= '3.12'" },
-    { name = "markdown-it-py", marker = "python_full_version >= '3.12'" },
-    { name = "requests", marker = "python_full_version >= '3.12'" },
+    { name = "attrs", marker = "python_full_version >= '3.13'" },
+    { name = "click", marker = "python_full_version >= '3.13'" },
+    { name = "click-log", marker = "python_full_version >= '3.13'" },
+    { name = "jinja2", marker = "python_full_version >= '3.13'" },
+    { name = "markdown-it-py", marker = "python_full_version >= '3.13'" },
+    { name = "requests", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/56/35/6e05af688bc3f983a207a6f89acf139aa16693473360d0cbc2a9bda19efc/scriv-1.5.1.tar.gz", hash = "sha256:30ae9ff8d144f8e0cf394c4e1d379542f1b3823767642955b54ec40dc00b32b6", size = 84382 }
 wheels = [
@@ -1176,7 +1183,7 @@ name = "wcmatch"
 version = "10.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "bracex", marker = "python_full_version >= '3.12'" },
+    { name = "bracex", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/41/ab/b3a52228538ccb983653c446c1656eddf1d5303b9cb8b9aef6a91299f862/wcmatch-10.0.tar.gz", hash = "sha256:e72f0de09bba6a04e0de70937b0cf06e55f36f37b3deb422dfaf854b867b840a", size = 115578 }
 wheels = [
