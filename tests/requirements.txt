@@ -3,6 +3,7 @@
 colorama==0.4.6 ; sys_platform == 'win32'
 coverage==7.6.12 ; python_full_version >= '3.13'
 dirlay==0.4.0
+doctestcase==0.2.2
 exceptiongroup==1.2.2 ; python_full_version < '3.11'
 iniconfig==2.0.0
 mypy==1.14.1 ; python_full_version < '3.9'
@@ -10,7 +11,7 @@ mypy==1.15.0 ; python_full_version >= '3.9'
 mypy-extensions==1.0.0
 packaging==24.2
 pluggy==1.5.0
-pytest==8.3.4
+pytest==8.3.5
 pytest-cov==6.0.0 ; python_full_version >= '3.13'
 pytest-sugar==1.0.0 ; python_full_version >= '3.13'
 termcolor==2.5.0 ; python_full_version >= '3.13'

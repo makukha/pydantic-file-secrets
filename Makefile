@@ -15,13 +15,16 @@ docs/img/badge/%.svg: .tmp/%.xml
 
 .PHONY: requirements
 requirements: tests/requirements.txt
-tests/requirements.txt: pyproject.toml uv.lock
+tests/requirements.txt: uv.lock
 	uv export --frozen --no-emit-project --no-hashes --only-group testing > $@
 
 .PHONY: docs
 docs: README.md
 
-README.md: FORCE
+README.md: docs/*.md FORCE
+	uv run docsub sync -i $@
+
+%.md: FORCE
 	uv run docsub sync -i $@
 
 FORCE:

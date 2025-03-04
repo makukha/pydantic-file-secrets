@@ -1,7 +1,7 @@
 services:
 
   tox:
-    image: makukha/multipython
+    image: makukha/multipython:unsafe
     working_dir: /work
     entrypoint: tox
     volumes:

@@ -130,24 +130,22 @@ def test_missing_dir_ok(conf, secrets, secrets_dir, expected, tmp_path):
         model_config = dict(secrets_dir=secrets_dirs, **conf)
 
     with secrets.mktree(tmp_path):
-        # fmt: off
-        match expected:
-
-            case dict():
-                assert MySettings().model_dump() == expected
-
-            case (warning_type, warning_count, msg_fragment, value):
-
-                with pytest.warns(warning_type) as warninfo:
-                    settings = MySettings()
-                assert len(warninfo) == warning_count
-                assert all(msg_fragment in w.message.args[0] for w in warninfo)
-                assert settings.model_dump() == value
-
-            case (error_type, msg_fragment):
-                with pytest.raises(error_type, match=msg_fragment):
-                    MySettings()
-
-            case _:
-                raise AssertionError('unreachable')
-        # fmt: on
+        # clean execution
+        if isinstance(expected, dict):
+            assert MySettings().model_dump() == expected
+        # error
+        elif isinstance(expected, tuple) and len(expected) == 2:
+            error_type, msg_fragment = expected
+            with pytest.raises(error_type, match=msg_fragment):
+                MySettings()
+        # warnings
+        elif isinstance(expected, tuple) and len(expected) == 4:
+            warning_type, warning_count, msg_fragment, value = expected
+            with pytest.warns(warning_type) as warninfo:
+                settings = MySettings()
+            assert len(warninfo) == warning_count
+            assert all(msg_fragment in w.message.args[0] for w in warninfo)
+            assert settings.model_dump() == value
+        # unexpected
+        else:
+            raise AssertionError('unreachable')

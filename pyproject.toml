@@ -8,8 +8,8 @@ description = "Use file secrets in nested Pydantic Settings models, drop-in repl
 authors = [
   {name = "Michael Makukha", email = "m.makukha@gmail.com"},
 ]
-readme = "README.md"
 license = {text = "MIT"}
+readme = "README.md"
 urls.Documentation = "https://github.com/makukha/pydantic-file-secrets#readme"
 urls.Homepage = "https://github.com/makukha/pydantic-file-secrets"
 urls.Repository = "https://github.com/makukha/pydantic-file-secrets"
@@ -49,19 +49,21 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "bump-my-version>=0.32 ; python_version >= '3.12'",
-  "docsub>=0.9 ; python_version >= '3.12'",
-  "genbadge[tests,coverage]>=1.1 ; python_version >= '3.12'",
-  "mypy>=1.15 ; python_version >= '3.12'",
-  "ruff>=0.9 ; python_version >= '3.12'",
-  "scriv>=1.5 ; python_version >= '3.12'",
+  "bump-my-version>=1.0 ; python_version >= '3.13'",
+  "docsub>=0.9.0 ; python_version >= '3.13'",
+  "genbadge[tests,coverage]>=1.1 ; python_version >= '3.13'",
+  "mypy>=1.15 ; python_version >= '3.13'",
+  "ruff>=0.9 ; python_version >= '3.13'",
+  "scriv>=1.5 ; python_version >= '3.13'",
+  "typing_extensions>=3",
 ]
 testing = [
   "dirlay>=0.4.0,<0.5.0",
-  "mypy>=1.14",  # last version supporting Python 3.8
-  "pytest>=8.3",
-  "pytest-cov>=6.0 ; python_version >= '3.13'",
-  "pytest-sugar>=1.0 ; python_version >= '3.13'",
+  "doctestcase>=0.2.2",
+  "mypy>=1",
+  "pytest>=8",
+  "pytest-cov>=6 ; python_version >= '3.13'",
+  "pytest-sugar>=1 ; python_version >= '3.13'",
 ]
 
 # bump-my-version
@@ -70,6 +72,7 @@ testing = [
 current_version = "0.4.1"
 allow_dirty = true
 files = [
+  {filename = ".copier-answers.yml"},
   {filename = "docs/badges.md"},
   {filename = "src/pydantic_file_secrets/__version__.py"},
 ]
@@ -78,7 +81,7 @@ files = [
 
 [tool.hatch.build]
 exclude = [
-  ".jist",
+  ".just",
   "Justfile",
   "Makefile",
   "compose.yml",
@@ -92,6 +95,9 @@ path = "src/pydantic_file_secrets/__version__.py"
 incremental = false
 python_version = "3.9"
 strict = true
+exclude = [
+  "tests/",  # todo: include when fixing mypy errors
+]
 [[tool.mypy.overrides]]
 module = "tests.*"
 allow_incomplete_defs = true
@@ -100,12 +106,12 @@ allow_untyped_defs = true
 # ruff
 
 [tool.ruff]
-exclude = [".jist"]
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "B", "S"]
 per-file-ignores."tests/**/*.py" = [
   "S101",  # Use of `assert` detected
   "S102",  # Use of `exec` detected
+  "S108",  # Probable insecure usage of temporary file or directory
   "S603",  # `subprocess` call: check for execution of untrusted input
 ]
 [tool.ruff.format]
@@ -117,10 +123,9 @@ docstring-code-line-length = "dynamic"
 
 [tool.scriv]
 categories = ["Security ⚠️", "Breaking 🔥", "Removed 💨", "Deprecated ❄️", "Added 🌿", "Changed", "Fixed", "Docs", "Misc"]
-entry_title_template = "[{{ version }}](https://github.com/makukha.pydantic-file-secrets/releases/tag/v{{ version }}) — {{ date.strftime('%Y-%m-%d') }}"
-ghrel_template = "command: just gh-issue-title"  # abuse config option to pass default message
+entry_title_template = "[{{ version }}](https://github.com/makukha/pydantic-file-secrets/releases/tag/v{{ version }}) — {{ date.strftime('%Y-%m-%d') }}"
 format = "md"
 fragment_directory = "NEWS.d"
 md_header_level = "2"
 new_fragment_template = "file: NEWS.d/.new_fragment.md.j2"
-version = "command: just version"
+version = "literal: pyproject.toml: tool.bumpversion.current_version"

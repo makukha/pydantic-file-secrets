@@ -1,8 +1,11 @@
 from functools import reduce
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union
 import warnings
+
+if TYPE_CHECKING:  # pragma: no cover
+    from typing_extensions import TypeAlias  # noqa: F401  # used in type hint
 
 import pydantic_settings
 from pydantic_settings import (
@@ -13,21 +16,23 @@ from pydantic_settings import (
 from pydantic_settings.sources import SettingsError, parse_env_vars
 from pydantic_settings.utils import path_type_label
 
-from .__version__ import __version__
+from .__version__ import __version__ as __version__
 
 
-__all__ = ['__version__', 'FileSecretsSettingsSource']
+__all__ = ['FileSecretsSettingsSource']
 
 
 SECRETS_DIR_MAX_SIZE = 16 * 2**20  # 16 MiB seems to be a reasonable default
 PS_VERSION = pydantic_settings.__version__
+
+PathType = Union[str, Path]  # type: TypeAlias
 
 
 class FileSecretsSettingsSource(EnvSettingsSource):
     def __init__(
         self,
         file_secret_settings: Union[SecretsSettingsSource, Type[BaseSettings]],
-        secrets_dir: Union[str, Path, List[Union[str, Path]], None] = None,
+        secrets_dir: Union[str, Path, List[PathType], None] = None,
         secrets_dir_missing: Optional[Literal['ok', 'warn', 'error']] = None,
         secrets_dir_max_size: Optional[int] = None,
         secrets_case_sensitive: Optional[bool] = None,
@@ -41,8 +46,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         # We allow the first argument to be settings_cls like original
         # SecretsSettingsSource. However, it is recommended to pass
         # SecretsSettingsSource instance instead (as it is shown in usage examples),
-        # otherwise `_secrets_dir` arg passed to Settings() constructor
-        # will be ignored.
+        # otherwise `_secrets_dir` arg passed to Settings() constructor will be ignored.
         settings_cls: type[BaseSettings] = getattr(
             file_secret_settings,
             'settings_cls',
@@ -50,7 +54,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         )
         # config options
         conf = settings_cls.model_config
-        self.secrets_dir: str | Path | list[str | Path] | None = first_not_none(
+        self.secrets_dir: Union[str, Path, List[PathType], None] = first_not_none(
             getattr(file_secret_settings, 'secrets_dir', None),
             secrets_dir,
             conf.get('secrets_dir'),
@@ -81,7 +85,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         )
 
         # nested options
-        self.secrets_nested_delimiter: str | None = first_not_none(
+        self.secrets_nested_delimiter: Optional[str] = first_not_none(
             secrets_nested_delimiter,
             conf.get('secrets_nested_delimiter'),
             conf.get('env_nested_delimiter'),
@@ -179,11 +183,11 @@ class FileSecretsSettingsSource(EnvSettingsSource):
     def __repr__(self) -> str:
         return f'FileSecretsSettingsSource(secrets_dir={self.secrets_dir!r})'
 
-    def __call__(self):
+    def __call__(self) -> dict[str, Any]:
         res = super().__call__()
         # breakpoint()  # this is the most informative place to debug
         return res
 
 
-def first_not_none(*objs) -> Any:
+def first_not_none(*objs: Any) -> Any:
     return next(filter(lambda o: o is not None, objs), None)

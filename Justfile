@@ -1,33 +1,52 @@
-import? '.jist/gh.just'
-import? '.jist/git.just'
-import? '.jist/op.just'
-import? '.jist/scriv.just'
-import? '.jist/version.just'
+import? '.just/changelog.just'
+import? '.just/gh.just'
+import? '.just/version.just'
 
 # list available commands
 default:
     @just --list
 
+#
+# Develop
+#
+
 # initialize dev environment
-[group('initialize'), macos]
+[group('develop'), macos]
 init:
     sudo port install gh git uv yq
-    just git-hooks
+    echo -e "#!/usr/bin/env bash\njust pre-commit" > .git/hooks/pre-commit
+    chmod ug+x .git/hooks/*
     just sync
 
-# develop
+# synchronize dev environment
+[group('develop')]
+sync:
+    uv sync --all-extras --all-groups
+    make requirements
+
+# update dev environment
+[group('develop')]
+upgrade:
+    uv sync --all-extras --all-groups --upgrade
+    make requirements
+    copier update --defaults --trust --vcs-ref main
 
 # run linters
 [group('develop')]
 lint:
-    #uv run mypy .
+    uv run mypy .
     uv run ruff check
     uv run ruff format --diff
+
+[private]
+tox-provision:
+    docker compose run --rm -it tox run --notest --skip-pkg-install
 
 # run tests
 [group('develop')]
 test *toxargs: build
     make tests/requirements.txt
+    {{ if toxargs == "" { "time just tox-provision " } else { "" } }}
     time docker compose run --rm -it tox \
         {{ if toxargs == "" { "run-parallel" } else { "run" } }} \
          --installpkg="$(find dist -name '*.whl')" {{toxargs}}
@@ -48,7 +67,9 @@ build: sync
 docs:
     make docs
 
-# publish
+#
+# Publish
+#
 
 # publish package on PyPI
 [group('publish')]
@@ -56,8 +77,13 @@ pypi-publish: build
     uv publish
 
 #
-# Management operations
+# Manage
 #
+
+# display confirmation prompt
+[private]
+confirm msg:
+    @printf "\n{{msg}}, then press enter " && read
 
 # run pre-commit hook
 [group('manage')]
@@ -76,8 +102,11 @@ pre-merge:
 [group('manage')]
 merge:
     just pre-merge
-    just gh-push
-    just gh-pr
+    just gh-create-pr
+    just confirm "Merge pull request"
+    git switch main
+    git fetch
+    git pull
 
 # release
 [group('manage')]
@@ -85,15 +114,10 @@ release:
     just pre-merge
     just bump
     just changelog
-    just confirm "Proofread the changelog"
-    just pre-merge
-    just confirm "Commit changes"
-    just gh-pr
-    just confirm "Merge pull request"
-    git switch main
-    git fetch
-    git pull
+    just docs
+    just confirm "Proofread the changelog and commit changes"
+    just merge
     just gh-repo-upd
-    just gh-release
+    just gh-create-release
     just confirm "Update release notes and publish GitHub release"
     just pypi-publish
