@@ -19,6 +19,7 @@ from .__version__ import __version__
 __all__ = ['__version__', 'FileSecretsSettingsSource']
 
 
+SECRETS_DIR_MAX_SIZE = 16 * 2**20  # 16 MiB seems to be a reasonable default
 PS_VERSION = pydantic_settings.__version__
 
 
@@ -62,7 +63,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         self.secrets_dir_max_size: int = first_not_none(
             secrets_dir_max_size,
             conf.get('secrets_dir_max_size'),
-            16 * 2**20,  # 8 MiB seems to be a reasonable default
+            SECRETS_DIR_MAX_SIZE,
         )
         self.case_sensitive: bool = first_not_none(
             secrets_case_sensitive,
