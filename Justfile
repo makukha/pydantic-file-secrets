@@ -38,10 +38,15 @@ lint:
     uv run ruff check
     uv run ruff format --diff
 
+[private]
+tox-provision:
+    docker compose run --rm -it tox run --notest --skip-pkg-install
+
 # run tests
 [group('develop')]
 test *toxargs: build
     make tests/requirements.txt
+    {{ if toxargs == "" { "time just tox-provision " } else { "" } }}
     time docker compose run --rm -it tox \
         {{ if toxargs == "" { "run-parallel" } else { "run" } }} \
          --installpkg="$(find dist -name '*.whl')" {{toxargs}}
