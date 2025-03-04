@@ -43,18 +43,18 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class DbSettings(BaseModel):
     user: str
-    password: Secret[str]  # secret in nested model
+    passwd: Secret[str]  # secret in nested model
 
 class Settings(BaseSettings):
+    app_key: Secret[str]  # secret in root model
     db: DbSettings
-    app_key: Secret[str]  # secret in root config
 
     model_config = SettingsConfigDict(
         secrets_dir='/run/secrets',
     )
 ```
 
-Pydantic Settings has a corresponding data source, [`SecretsSettingsSource`](https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.SecretsSettingsSource), but it does not load secrets in nested models. For things that DO NOT work in original Pydantic Settings, see [test_pydantic_motivation.py](https://github.com/makukha/pydantic-file-secrets/blob/main/tests/test_pydantic_motivation.py).
+Pydantic Settings has a corresponding data source, [`SecretsSettingsSource`](https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.SecretsSettingsSource), but it does not load secrets in nested models. For things that DO NOT work in original Pydantic Settings, see [test_pydantic_motivation.py](https://github.com/makukha/pydantic-file-secrets/blob/main/tests/test_motivation.py).
 
 
 ## Solution
@@ -73,7 +73,7 @@ $ pip install pydantic-file-secrets
 # /run/secrets/app_key
 secret1
 
-# /run/secrets/db__password
+# /run/secrets/db__passwd
 secret2
 ```
 
@@ -84,7 +84,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class DbSettings(BaseModel):
     user: str
-    password: Secret[str]
+    passwd: Secret[str]
 
 class Settings(BaseSettings):
     db: DbSettings
@@ -121,7 +121,7 @@ Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for fi
 # /run/secrets/app_key
 secret1
 
-# /run/secrets/db/password
+# /run/secrets/db/passwd
 secret2
 ```
 
@@ -164,7 +164,7 @@ If multiple `secrets_dir` passed, the same `secrets_dir_missing` action applies 
 
 ### secrets_dir_max_size
 
-Limit the size of `secrets_dir` for security reasons, defaults to 8 MiB.
+Limit the size of `secrets_dir` for security reasons, defaults to `SECRETS_DIR_MAX_SIZE` equal to 16 MiB.
 
 `FileSecretsSettingsSource` is a thin wrapper around [`EnvSettingsSource`](https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.EnvSettingsSource), which loads all potential secrets on initialization. This could lead to `MemoryError` if we mount a large file under `secrets_dir`.
 
@@ -200,12 +200,12 @@ However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/ma
 
 ## Testing
 
-100% test coverage [is ensured](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) for latest stable Python release (3.12).
+100% test coverage [is ensured](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) for latest stable Python release (3.13).
 
 Tests are run for all minor Pydantic Settings v2 versions and all minor Python 3 versions supported by Pydantic Settings:
 
-* Python v. 3.{8,9,10,11,12,13}
-* pydantic-settings v. 2.{2,3,4,5,6,7}
+* Python 3.{8,9,10,11,12,13}
+* pydantic-settings v2.{2,3,4,5,6,7,8}
 
 
 ## History

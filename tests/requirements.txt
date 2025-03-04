@@ -2,6 +2,7 @@
 #    uv export --frozen --no-emit-project --no-hashes --only-group testing
 colorama==0.4.6 ; sys_platform == 'win32'
 coverage==7.6.12 ; python_full_version >= '3.13'
+dirlay==0.4.0
 exceptiongroup==1.2.2 ; python_full_version < '3.11'
 iniconfig==2.0.0
 mypy==1.14.1 ; python_full_version < '3.9'

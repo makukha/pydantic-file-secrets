@@ -1,108 +1,55 @@
-"""
-These tests show that the behaviour of FileSecretsSettingsSource matches
-SecretsSettingsSource for options env_ignore_empty, env_parse_none_str, env_parse_enums.
-"""
-
 from enum import Enum
-from typing import Tuple, Type, Union
+from typing import Optional
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
-import pytest
+from dirlay import Dir
+from pydantic_settings import BaseSettings
+from pytest import mark
 
-from pydantic_file_secrets import FileSecretsSettingsSource
+from tests.sample import settings_customise_sources
 
 
-class SomeEnum(str, Enum):
+class SampleEnum(str, Enum):
     TEST = 'test'
 
 
 class Settings(BaseSettings):
-    key_empty: Union[str, None] = None
-    key_none: Union[str, None] = None
-    key_enum: Union[SomeEnum, None] = None
+    field_empty: Optional[str] = None
+    field_none: Optional[str] = None
+    field_enum: Optional[SampleEnum] = None
 
 
-class SettingsPairMaker:
-    def __call__(
-        self,
-        model_config: SettingsConfigDict,
-    ) -> Tuple[Type[Settings], Type[Settings]]:
-        class SettingsSSS(Settings):  # SecretsSettingsSource
-            pass
-
-        class SettingsFSSS(Settings):  # FileSecretsSettingsSource
-            @classmethod
-            def settings_customise_sources(
-                cls,
-                settings_cls,
-                init_settings,
-                env_settings,
-                dotenv_settings,
-                file_secret_settings,
-            ) -> tuple:
-                return (
-                    init_settings,
-                    env_settings,
-                    FileSecretsSettingsSource(file_secret_settings),
-                )
-
-        SettingsSSS.model_config = model_config
-        SettingsFSSS.model_config = model_config
-
-        return (SettingsSSS, SettingsFSSS)
-
-
-@pytest.fixture()
-def settings_models() -> SettingsPairMaker:
-    return SettingsPairMaker()
-
-
-@pytest.fixture()
-def populated_secrets_dir(secrets_dir):
-    secrets_dir.add_files(
-        ('key_empty', ''),
-        ('key_none', 'null'),
-        ('key_enum', 'test'),
-    )
-    yield secrets_dir
-
-
-@pytest.mark.parametrize(
-    'conf', [{}, {'env_ignore_empty': True}, {'env_ignore_empty': False}]
+@mark.parametrize(
+    'conf,expected',
+    (
+        # default settings
+        ({}, dict(field_empty='', field_none='null', field_enum=SampleEnum.TEST)),
+        # env_ignore_empty has no effect on secrets
+        ({'env_ignore_empty': True}, dict(field_empty='')),
+        ({'env_ignore_empty': False}, dict(field_empty='')),
+        # env_parse_none_str has no effect on secrets
+        ({'env_parse_none_str': 'null'}, dict(field_none='null')),
+        # env_parse_enums has no effect on secrets
+        ({'env_parse_enums': True}, dict(field_enum=SampleEnum.TEST)),
+        ({'env_parse_enums': False}, dict(field_enum=SampleEnum.TEST)),
+    ),
 )
-def test_env_ignore_empty(settings_models, conf, populated_secrets_dir):
-    SettingsSSS, SettingsFSSS = settings_models(
-        model_config=SettingsConfigDict(
-            secrets_dir=populated_secrets_dir,
-            **conf,
-        ),
-    )
-    conf_sss, conf_fsss = SettingsSSS(), SettingsFSSS()
-    assert conf_sss.key_empty == conf_fsss.key_empty == ''
+def test_env_ignore_empty(conf, expected, tmp_path):
+    secrets = Dir() | {
+        'field_empty': '',
+        'field_none': 'null',
+        'field_enum': 'test',
+    }
 
+    class Original(Settings):
+        model_config = {'secrets_dir': tmp_path, **conf}
 
-@pytest.mark.parametrize('conf', [{}, {'env_parse_none_str': 'null'}])
-def test_env_parse_none_str(settings_models, conf, populated_secrets_dir):
-    SettingsSSS, SettingsFSSS = settings_models(
-        model_config=SettingsConfigDict(
-            secrets_dir=populated_secrets_dir,
-            **conf,
-        ),
-    )
-    conf_sss, conf_fsss = SettingsSSS(), SettingsFSSS()
-    assert conf_sss.key_none == conf_fsss.key_none == 'null'
+    class Evaluated(Settings):
+        model_config = {'secrets_dir': tmp_path, **conf}
+        settings_customise_sources = classmethod(settings_customise_sources)
 
-
-@pytest.mark.parametrize(
-    'conf', [{}, {'env_parse_enums': True}, {'env_parse_enums': False}]
-)
-def test_env_parse_enums(settings_models, conf, populated_secrets_dir):
-    SettingsSSS, SettingsFSSS = settings_models(
-        model_config=SettingsConfigDict(
-            secrets_dir=populated_secrets_dir,
-            **conf,
-        ),
-    )
-    conf_sss, conf_fsss = SettingsSSS(), SettingsFSSS()
-    assert conf_sss.key_enum is SomeEnum.TEST
-    assert conf_fsss.key_enum is SomeEnum.TEST
+    with secrets.mktree(tmp_path):
+        original = Original()
+        evaluated = Evaluated()
+        assert original.model_dump() == evaluated.model_dump()
+        for k, v in expected.items():
+            assert getattr(original, k) == getattr(evaluated, k) == v

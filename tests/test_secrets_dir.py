@@ -1,89 +1,153 @@
+from typing import Optional
+
+from dirlay import Dir
+from pydantic_settings import BaseSettings
 from pydantic_settings.sources import SettingsError
 import pytest
+from pytest import mark
+
+from pydantic_file_secrets import SECRETS_DIR_MAX_SIZE
+from tests.sample import settings_customise_sources
 
 
-def test_missing_dir_ok(settings_model, monkeypatch, tmp_path):
-    monkeypatch.setenv('DB__USER', 'user')
-    Settings = settings_model(
-        model_config=dict(
-            env_nested_delimiter='__',
-            secrets_dir=tmp_path / 'non-existing',
-            secrets_dir_missing='ok',
+class Settings(BaseSettings):
+    settings_customise_sources = classmethod(settings_customise_sources)
+    key1: Optional[str] = None
+    key2: Optional[str] = None
+
+
+@mark.parametrize(
+    'conf,secrets,secrets_dir,expected',
+    (
+        (
+            # when multiple secrets_dir values are given, their values are merged
+            dict(),
+            Dir({'dir1/key1': 'a', 'dir1/key2': 'b', 'dir2/key2': 'c'}),
+            ['dir1', 'dir2'],
+            {'key1': 'a', 'key2': 'c'},
         ),
-    )
-    conf = Settings()
-    assert conf.app_key is None
-    assert conf.db.password is None
-
-
-def test_missing_dir_warn(settings_model, monkeypatch, tmp_path):
-    monkeypatch.setenv('DB__USER', 'user')
-    Settings = settings_model(
-        model_config=dict(
-            env_nested_delimiter='__',
-            secrets_dir=tmp_path / 'non-existing',
-            # warn is default
+        (
+            # when secrets_dir is not a directory, error is raised
+            dict(),
+            Dir({'some_file': ''}),
+            'some_file',
+            (SettingsError, 'must reference a directory'),
         ),
-    )
-    with pytest.warns(UserWarning, match='does not exist'):
-        conf = Settings()
-    assert conf.app_key is None
-    assert conf.db.password is None
-
-
-def test_missing_dir_error(settings_model, monkeypatch, tmp_path):
-    monkeypatch.setenv('DB__USER', 'user')
-    Settings = settings_model(
-        model_config=dict(
-            env_nested_delimiter='__',
-            secrets_dir=tmp_path / 'non-existing',
-            secrets_dir_missing='error',
+        (
+            # missing secrets_dir emits warning by default
+            dict(),
+            Dir({'key1': 'value'}),
+            'missing_subdir',
+            (UserWarning, 1, 'does not exist', {'key1': None, 'key2': None}),
         ),
-    )
-    with pytest.raises(SettingsError, match='does not exist'):
-        Settings()
-
-
-def test_missing_dir_invalid(settings_model, monkeypatch, tmp_path):
-    monkeypatch.setenv('DB__USER', 'user')
-    Settings = settings_model(
-        model_config=dict(
-            env_nested_delimiter='__',
-            secrets_dir=tmp_path / 'non-existing',
-            secrets_dir_missing='whatever',  # invalid value
+        (
+            # ...or expect warning explicitly (identical behaviour)
+            dict(secrets_dir_missing='warn'),
+            Dir({'key1': 'value'}),
+            'missing_subdir',
+            (UserWarning, 1, 'does not exist', {'key1': None, 'key2': None}),
         ),
-    )
-    with pytest.raises(SettingsError, match='invalid secrets_dir_missing value'):
-        Settings()
-
-
-def test_secrets_not_dir(settings_model, monkeypatch, secrets_dir):
-    monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files(
-        ('secrets_notdir', ''),
-    )
-    Settings = settings_model(
-        model_config=dict(
-            env_nested_delimiter='__',
-            secrets_dir=secrets_dir / 'secrets_notdir',  # file
+        (
+            # missing secrets_dir warning can be suppressed
+            dict(secrets_dir_missing='ok'),
+            Dir({'key1': 'value'}),
+            'missing_subdir',
+            {'key1': None, 'key2': None},
         ),
-    )
-    with pytest.raises(SettingsError, match='must reference a directory'):
-        Settings()
-
-
-def test_secrets_dir_size(settings_model, monkeypatch, secrets_dir):
-    SIZE = 10
-    monkeypatch.setenv('DB__USER', 'user')
-    secrets_dir.add_files(
-        ('large_file', ' ' * SIZE),
-    )
-    Settings = settings_model(
-        model_config=dict(
-            env_nested_delimiter='__',
-            secrets_dir=secrets_dir,
-            secrets_dir_max_size=SIZE - 1,
+        (
+            # missing secrets_dir can raise error
+            dict(secrets_dir_missing='error'),
+            Dir({'key1': 'value'}),
+            'missing_subdir',
+            (SettingsError, 'does not exist'),
         ),
+        (
+            # invalid secrets_dir_missing value raises error
+            dict(secrets_dir_missing='uNeXpEcTeD'),
+            Dir({'key1': 'value'}),
+            'missing_subdir',
+            (SettingsError, 'invalid secrets_dir_missing value'),
+        ),
+        (
+            # when multiple secrets_dir do not exist, multiple warnings are emitted
+            dict(),
+            Dir({'key1': 'value'}),
+            ['missing_subdir1', 'missing_subdir2'],
+            (UserWarning, 2, 'does not exist', {'key1': None, 'key2': None}),
+        ),
+        (
+            # secrets_dir size is limited
+            dict(),
+            Dir({'key1': 'x' * SECRETS_DIR_MAX_SIZE}),
+            '.',
+            {'key1': 'x' * SECRETS_DIR_MAX_SIZE, 'key2': None},
+        ),
+        (
+            # ...and raises error if file is larger than the limit
+            dict(),
+            Dir({'key1': 'x' * (SECRETS_DIR_MAX_SIZE + 1)}),
+            '.',
+            (SettingsError, 'secrets_dir size'),
+        ),
+        (
+            # secrets_dir size limit can be adjusted
+            dict(secrets_dir_max_size=100),
+            Dir({'key1': 'x' * 100}),
+            '.',
+            {'key1': 'x' * 100, 'key2': None},
+        ),
+        (
+            # ...and raises error if file is larger than the limit
+            dict(secrets_dir_max_size=100),
+            Dir({'key1': 'x' * 101}),
+            '.',
+            (SettingsError, 'secrets_dir size'),
+        ),
+        (
+            # ...even if secrets_dir size exceeds limit because of another file
+            dict(secrets_dir_max_size=100),
+            Dir({'another_file': 'x' * 101}),
+            '.',
+            (SettingsError, 'secrets_dir size'),
+        ),
+        (
+            # when multiple secrets_dir values are given, their sizes are not added
+            dict(secrets_dir_max_size=100),
+            Dir({'dir1/key1': 'x' * 100, 'dir2/key2': 'y' * 100}),
+            ['dir1', 'dir2'],
+            {'key1': 'x' * 100, 'key2': 'y' * 100},
+        ),
+    ),
+)
+def test_missing_dir_ok(conf, secrets, secrets_dir, expected, tmp_path):
+    secrets_dirs = (
+        [tmp_path / d for d in secrets_dir]
+        if isinstance(secrets_dir, list)
+        else tmp_path / secrets_dir
     )
-    with pytest.raises(SettingsError, match='secrets_dir size'):
-        Settings()
+
+    class MySettings(Settings):
+        model_config = dict(secrets_dir=secrets_dirs, **conf)
+
+    with secrets.mktree(tmp_path):
+        # fmt: off
+        match expected:
+
+            case dict():
+                assert MySettings().model_dump() == expected
+
+            case (warning_type, warning_count, msg_fragment, value):
+
+                with pytest.warns(warning_type) as warninfo:
+                    settings = MySettings()
+                assert len(warninfo) == warning_count
+                assert all(msg_fragment in w.message.args[0] for w in warninfo)
+                assert settings.model_dump() == value
+
+            case (error_type, msg_fragment):
+                with pytest.raises(error_type, match=msg_fragment):
+                    MySettings()
+
+            case _:
+                raise AssertionError('unreachable')
+        # fmt: on
