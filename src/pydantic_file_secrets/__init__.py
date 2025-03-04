@@ -1,7 +1,7 @@
 from functools import reduce
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Type, Union
+from typing import Any, Dict, List, Literal, Optional, Type, Union
 import warnings
 
 import pydantic_settings
@@ -28,15 +28,15 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         self,
         file_secret_settings: Union[SecretsSettingsSource, Type[BaseSettings]],
         secrets_dir: Union[str, Path, List[Union[str, Path]], None] = None,
-        secrets_dir_missing: Union[Literal['ok', 'warn', 'error'], None] = None,
-        secrets_dir_max_size: Union[int, None] = None,
-        secrets_case_sensitive: Union[bool, None] = None,
-        secrets_prefix: Union[str, None] = None,
-        secrets_nested_delimiter: Union[str, None] = None,
-        secrets_nested_subdir: Union[bool, None] = None,
+        secrets_dir_missing: Optional[Literal['ok', 'warn', 'error']] = None,
+        secrets_dir_max_size: Optional[int] = None,
+        secrets_case_sensitive: Optional[bool] = None,
+        secrets_prefix: Optional[str] = None,
+        secrets_nested_delimiter: Optional[str] = None,
+        secrets_nested_subdir: Optional[bool] = None,
         # args for compatibility with SecretsSettingsSource, don't use directly
-        case_sensitive: Union[bool, None] = None,
-        env_prefix: Union[str, None] = None,
+        case_sensitive: Optional[bool] = None,
+        env_prefix: Optional[str] = None,
     ) -> None:
         # We allow the first argument to be settings_cls like original
         # SecretsSettingsSource. However, it is recommended to pass
