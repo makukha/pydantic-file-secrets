@@ -215,6 +215,7 @@ Few important things to note:
 
 - `@with_builtin_sources` decorator provides `NamedTuple` argument, sources names don't need to be copied anymore
 - `BaseSource` alias is shorter than `PydanticBaseSettingsSource` and is easier to use in type hints
+- `settings_cls` was removed from `settings_customise_sources` signature, probably `cls` is sufficient
 
 <!-- docsub: begin -->
 <!-- docsub: include tests/usage/sugar.py -->
