@@ -17,24 +17,24 @@
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/ruff)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 <!-- docsub: end -->
+[![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://pydantic.dev)
 [![pypi downloads](https://img.shields.io/pypi/dw/pydantic-file-secrets)](https://pypistats.org/packages/pydantic-file-secrets)
 
 
-This project is inspired by discussions in Pydantic Settings issue tracker and solves problems in issues [#30](https://github.com/pydantic/pydantic-settings/issues/30) and [#154](https://github.com/pydantic/pydantic-settings/issues/154).
+This project is inspired by discussions in Pydantic Settings repository and proposes solution to [#30](https://github.com/pydantic/pydantic-settings/issues/30) and [#154](https://github.com/pydantic/pydantic-settings/issues/154).
 
 
 # Features
 
 <!-- docsub: begin -->
 <!-- docsub: include docs/features.md -->
-* Use secret file source in nested settings models
-* Plain or nested directory layout: `/run/secrets/dir__key` or `/run/secrets/dir/key`
+* Plain or nested directory layout: `secrets/dir__key` or `secrets/dir/key`
 * Respects `env_prefix`, `env_nested_delimiter` and other [config options](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options)
-* Implements config options `secrets_prefix`, `secrets_nested_delimiter`, [etc.](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options) to configure secrets and env vars independently
+* Implements config options `secrets_prefix`, `secrets_nested_delimiter` [and more](https://github.com/makukha/pydantic-file-secrets?tab=readme-ov-file#configuration-options) to configure secrets and env vars independently
 * Drop-in replacement of standard `SecretsSettingsSource`
-* Can be used to monkey patch `SecretsSettingsSource`
 * Pure Python thin wrapper over standard `EnvSettingsSource`
 * No third party dependencies except `pydantic-settings`
+* Fully typed
 * 100% test coverage
 <!-- docsub: end -->
 
@@ -74,83 +74,196 @@ class Settings(BaseSettings):
 <!-- docsub: include docs/usage.md -->
 ## Plain secrets directory layout
 
+<!-- docsub: begin -->
+<!-- docsub: x dirtree tests/test_usage.py:UsagePlain.secrets_dir -->
+<!-- docsub: lines after 1 upto -1 -->
 ```text
-# /run/secrets/app_key
-secret1
-
-# /run/secrets/db__passwd
-secret2
+📂 secrets
+├── 📄 app_key
+└── 📄 db__passwd
 ```
+<!-- docsub: end -->
 
+<!-- docsub: begin -->
+<!-- docsub: include tests/usage/plain.py -->
+<!-- docsub: lines after 1 upto -1 -->
 ```python
 from pydantic import BaseModel, Secret
-from pydantic_file_secrets import FileSecretsSettingsSource
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_file_secrets import FileSecretsSettingsSource, SettingsConfigDict
+from pydantic_settings import BaseSettings
+from pydantic_settings.sources import PydanticBaseSettingsSource
+
 
 class DbSettings(BaseModel):
-    user: str
     passwd: Secret[str]
 
-class Settings(BaseSettings):
 
-    db: DbSettings
+class Settings(BaseSettings):
     app_key: Secret[str]
+    db: DbSettings
 
     model_config = SettingsConfigDict(
-        secrets_dir='/run/secrets',
-        env_nested_delimiter='__',
+        secrets_dir='secrets',
     )
-    
+
     @classmethod
     def settings_customise_sources(
         cls,
-        settings_cls,
-        init_settings,
-        env_settings,
-        dotenv_settings,
-        file_secret_settings,
-    ):
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
         return (
             init_settings,
             env_settings,
             dotenv_settings,
             FileSecretsSettingsSource(file_secret_settings),
         )
-
 ```
+<!-- docsub: end -->
+
+<!-- docsub: begin -->
+<!-- docsub: x cases tests/test_usage.py UsagePlain -->
+```pycon
+>>> Settings().model_dump()
+{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+```
+
+<!-- docsub: end -->
+
 
 ## Nested secrets directory layout
 
 Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for files. In particular, this allows to use nested directory layout along with environmemt variables for other non-secret settings:
 
+
+<!-- docsub: begin -->
+<!-- docsub: x dirtree tests/test_usage.py:UsageNested.secrets_dir -->
+<!-- docsub: lines after 1 upto -1 -->
 ```text
-# /run/secrets/app_key
-secret1
-
-# /run/secrets/db/passwd
-secret2
+📂 secrets
+├── 📄 app_key
+└── 📂 db
+    └── 📄 passwd
 ```
+<!-- docsub: end -->
 
+<!-- docsub: begin -->
+<!-- docsub: exec sed -n '/ *model_config =/,/ *)/p' tests/usage/nested.py -->
+<!-- docsub: lines after 1 upto -1 -->
 ```python
-...
     model_config = SettingsConfigDict(
-        secrets_dir='/run/secrets',
+        secrets_dir='secrets',
         secrets_nested_subdir=True,
     )
-...
 ```
+<!-- docsub: end -->
+
+<!-- docsub: begin -->
+<!-- docsub: x cases tests/test_usage.py UsageNested -->
+```pycon
+>>> Settings().model_dump()
+{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+```
+
+<!-- docsub: end -->
+
 
 ## Multiple `secrets_dir`
 
-When passing `list` to `secrets_dir`, last match wins.
 
-```python
-...
-    model_config = SettingsConfigDict(
-        secrets_dir=['/run/configs/', '/run/secrets'],
-    )
-...
+<!-- docsub: begin -->
+<!-- docsub: x dirtree tests/test_usage.py:UsageMultiple.secrets_dir -->
+<!-- docsub: lines after 1 upto -1 -->
+```text
+📂 secrets
+├── 📂 layer1
+│   └── 📄 app_key
+└── 📂 layer2
+    └── 📄 db__passwd
 ```
+<!-- docsub: end -->
+
+<!-- docsub: begin -->
+<!-- docsub: exec sed -n '/ *model_config =/,/ *)/p' tests/usage/multiple.py -->
+<!-- docsub: lines after 1 upto -1 -->
+```python
+    model_config = SettingsConfigDict(
+        secrets_dir=['secrets/layer1', 'secrets/layer2'],
+    )
+```
+<!-- docsub: end -->
+
+<!-- docsub: begin -->
+<!-- docsub: x cases tests/test_usage.py UsageMultiple -->
+```pycon
+>>> Settings().model_dump()
+{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+```
+
+<!-- docsub: end -->
+
+
+## Syntactic sugar 🍰 — experimental 🧪
+
+> [!CAUTION]
+> This syntax may change on any release. Pin current `pydantic-file-secrets` version if decided to use it.
+
+Few important things to note:
+
+- `@with_builtin_sources` decorator provides `NamedTuple` argument, sources names don't need to be copied anymore
+- `BaseSource` alias is shorter than `PydanticBaseSettingsSource` and is easier to use in type hints
+
+<!-- docsub: begin -->
+<!-- docsub: include tests/usage/sugar.py -->
+<!-- docsub: lines after 1 upto -1 -->
+```python
+from pydantic import BaseModel, Secret
+from pydantic_file_secrets import (
+    BaseSource,
+    BuiltinSources,
+    FileSecretsSettingsSource,
+    SettingsConfigDict,
+    with_builtin_sources,
+)
+from pydantic_settings import BaseSettings
+
+
+class DbSettings(BaseModel):
+    passwd: Secret[str]
+
+
+class Settings(BaseSettings):
+    app_key: Secret[str]
+    db: DbSettings
+
+    model_config = SettingsConfigDict(
+        secrets_dir='secrets',
+        secrets_nested_delimiter='__',
+    )
+
+    @classmethod
+    @with_builtin_sources
+    def settings_customise_sources(cls, src: BuiltinSources) -> tuple[BaseSource, ...]:
+        return (
+            src.init_settings,
+            src.env_settings,
+            src.dotenv_settings,
+            FileSecretsSettingsSource(src.file_secret_settings),
+        )
+```
+<!-- docsub: end -->
+
+<!-- docsub: begin -->
+<!-- docsub: x cases tests/test_usage.py UsageSugar -->
+```pycon
+>>> Settings().model_dump()
+{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+```
+
+<!-- docsub: end -->
 <!-- docsub: end #usage.md -->
 
 
@@ -218,7 +331,7 @@ Tests are run for all minor Pydantic Settings v2 versions and all minor Python 3
 
 # History
 
-* Several `secrets_dir` features were [ported](https://github.com/pydantic/pydantic-settings/releases/tag/v2.5.0) to `pydantic-settings` version 2.5.0
+* September 2024 — Multiple `secrets_dir` [feature](https://github.com/pydantic/pydantic-settings/pull/372) was merged to [pydantic-settings v2.5.0](https://github.com/pydantic/pydantic-settings/releases/tag/v2.5.0)
 
 
 # Authors

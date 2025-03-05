@@ -1,5 +1,6 @@
 from dirlay import Dir
 
+from pydantic_file_secrets import SettingsConfigDict
 from tests.sample import AppSettings
 
 
@@ -11,7 +12,7 @@ def test_strip_whitespace(monkeypatch, tmp_path):
     }
 
     class Settings(AppSettings):
-        model_config = dict(
+        model_config = SettingsConfigDict(
             env_nested_delimiter='__',
             secrets_dir=tmp_path,
             secrets_nested_delimiter='__',

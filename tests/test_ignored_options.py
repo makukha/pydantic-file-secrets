@@ -5,7 +5,12 @@ from dirlay import Dir
 from pydantic_settings import BaseSettings
 from pytest import mark
 
-from tests.sample import settings_customise_sources
+from pydantic_file_secrets import (
+    BuiltinSources,
+    FileSecretsSettingsSource,
+    SettingsConfigDict,
+    with_builtin_sources,
+)
 
 
 class SampleEnum(str, Enum):
@@ -33,7 +38,7 @@ class Settings(BaseSettings):
         ({'env_parse_enums': False}, dict(field_enum=SampleEnum.TEST)),
     ),
 )
-def test_env_ignore_empty(conf, expected, tmp_path):
+def test_env_ignore_empty(conf: SettingsConfigDict, expected, tmp_path):
     secrets = Dir() | {
         'field_empty': '',
         'field_none': 'null',
@@ -41,11 +46,15 @@ def test_env_ignore_empty(conf, expected, tmp_path):
     }
 
     class Original(Settings):
-        model_config = {'secrets_dir': tmp_path, **conf}
+        model_config = SettingsConfigDict(secrets_dir=tmp_path, **conf)
 
     class Evaluated(Settings):
-        model_config = {'secrets_dir': tmp_path, **conf}
-        settings_customise_sources = classmethod(settings_customise_sources)
+        model_config = SettingsConfigDict(secrets_dir=tmp_path, **conf)
+
+        @classmethod
+        @with_builtin_sources
+        def settings_customise_sources(cls, src: BuiltinSources):
+            return (FileSecretsSettingsSource(src.file_secret_settings),)
 
     with secrets.mktree(tmp_path):
         original = Original()

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from dirlay import Dir
 from pydantic_settings import BaseSettings
@@ -6,18 +6,28 @@ from pydantic_settings.sources import SettingsError
 import pytest
 from pytest import mark
 
-from pydantic_file_secrets import SECRETS_DIR_MAX_SIZE
-from tests.sample import settings_customise_sources
+from pydantic_file_secrets import (
+    BaseSource,
+    BuiltinSources,
+    FileSecretsSettingsSource,
+    SECRETS_DIR_MAX_SIZE,
+    SettingsConfigDict,
+    with_builtin_sources,
+)
 
 
 class Settings(BaseSettings):
-    settings_customise_sources = classmethod(settings_customise_sources)
     key1: Optional[str] = None
     key2: Optional[str] = None
 
+    @classmethod
+    @with_builtin_sources
+    def settings_customise_sources(cls, src: BuiltinSources) -> Tuple[BaseSource, ...]:
+        return (FileSecretsSettingsSource(src.file_secret_settings),)
+
 
 @mark.parametrize(
-    'conf,secrets,secrets_dir,expected',
+    'conf,secrets,dirs,expected',
     (
         (
             # when multiple secrets_dir values are given, their values are merged
@@ -119,15 +129,15 @@ class Settings(BaseSettings):
         ),
     ),
 )
-def test_missing_dir_ok(conf, secrets, secrets_dir, expected, tmp_path):
+def test_cases(conf: SettingsConfigDict, secrets, dirs, expected, tmp_path):
     secrets_dirs = (
-        [tmp_path / d for d in secrets_dir]
-        if isinstance(secrets_dir, list)
-        else tmp_path / secrets_dir
-    )
+        [tmp_path / d for d in dirs]
+        if isinstance(dirs, list)
+        else tmp_path / dirs
+    )  # fmt: skip
 
     class MySettings(Settings):
-        model_config = dict(secrets_dir=secrets_dirs, **conf)
+        model_config = SettingsConfigDict(secrets_dir=secrets_dirs, **conf)
 
     with secrets.mktree(tmp_path):
         # clean execution
@@ -144,7 +154,7 @@ def test_missing_dir_ok(conf, secrets, secrets_dir, expected, tmp_path):
             with pytest.warns(warning_type) as warninfo:
                 settings = MySettings()
             assert len(warninfo) == warning_count
-            assert all(msg_fragment in w.message.args[0] for w in warninfo)
+            assert all(msg_fragment in str(w.message) for w in warninfo)
             assert settings.model_dump() == value
         # unexpected
         else:

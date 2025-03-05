@@ -1,38 +1,46 @@
 from functools import reduce
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union
+from typing import Any, Dict, Literal, Optional, Union
 import warnings
-
-if TYPE_CHECKING:  # pragma: no cover
-    from typing_extensions import TypeAlias  # noqa: F401  # used in type hint
 
 import pydantic_settings
 from pydantic_settings import (
     BaseSettings,
     EnvSettingsSource,
+    PydanticBaseSettingsSource,
     SecretsSettingsSource,
 )
-from pydantic_settings.sources import SettingsError, parse_env_vars
+from pydantic_settings.sources import PathType, SettingsError, parse_env_vars
 from pydantic_settings.utils import path_type_label
 
 from .__version__ import __version__ as __version__
+from .customise import (
+    BaseSource,
+    BuiltinSources,
+    SettingsConfigDict,
+    with_builtin_sources,
+)
 
 
-__all__ = ['FileSecretsSettingsSource']
+__all__ = [
+    'BaseSource',
+    'BuiltinSources',
+    'FileSecretsSettingsSource',
+    'SettingsConfigDict',
+    'with_builtin_sources',
+]
 
 
 SECRETS_DIR_MAX_SIZE = 16 * 2**20  # 16 MiB seems to be a reasonable default
 PS_VERSION = pydantic_settings.__version__
 
-PathType = Union[str, Path]  # type: TypeAlias
-
 
 class FileSecretsSettingsSource(EnvSettingsSource):
     def __init__(
         self,
-        file_secret_settings: Union[SecretsSettingsSource, Type[BaseSettings]],
-        secrets_dir: Union[str, Path, List[PathType], None] = None,
+        file_secret_settings: Union[PydanticBaseSettingsSource, SecretsSettingsSource],
+        secrets_dir: Optional[PathType] = None,
         secrets_dir_missing: Optional[Literal['ok', 'warn', 'error']] = None,
         secrets_dir_max_size: Optional[int] = None,
         secrets_case_sensitive: Optional[bool] = None,
@@ -54,7 +62,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         )
         # config options
         conf = settings_cls.model_config
-        self.secrets_dir: Union[str, Path, List[PathType], None] = first_not_none(
+        self.secrets_dir: Optional[PathType] = first_not_none(
             getattr(file_secret_settings, 'secrets_dir', None),
             secrets_dir,
             conf.get('secrets_dir'),
