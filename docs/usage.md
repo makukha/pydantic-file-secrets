@@ -1,79 +1,195 @@
 ## Plain secrets directory layout
 
+<!-- docsub: begin -->
+<!-- docsub: x dirtree tests/test_usage.py:UsagePlain.secrets_dir -->
+<!-- docsub: lines after 1 upto -1 -->
 ```text
-# /run/secrets/app_key
-secret1
-
-# /run/secrets/db__passwd
-secret2
+📂 secrets
+├── 📄 app_key
+└── 📄 db__passwd
 ```
+<!-- docsub: end -->
 
+<!-- docsub: begin -->
+<!-- docsub: include tests/usage/plain.py -->
+<!-- docsub: lines after 1 upto -1 -->
 ```python
-from pydantic import BaseModel, Secret
-from pydantic_file_secrets import FileSecretsSettingsSource
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import BaseModel, SecretStr
+from pydantic_file_secrets import FileSecretsSettingsSource, SettingsConfigDict
+from pydantic_settings import BaseSettings
+from pydantic_settings.sources import PydanticBaseSettingsSource
+
 
 class DbSettings(BaseModel):
-    user: str
-    passwd: Secret[str]
+    passwd: SecretStr
+
 
 class Settings(BaseSettings):
-
+    app_key: SecretStr
     db: DbSettings
-    app_key: Secret[str]
 
     model_config = SettingsConfigDict(
-        secrets_dir='/run/secrets',
-        env_nested_delimiter='__',
+        secrets_dir='secrets',
+        secrets_nested_delimiter='__',
     )
-    
+
     @classmethod
     def settings_customise_sources(
         cls,
-        settings_cls,
-        init_settings,
-        env_settings,
-        dotenv_settings,
-        file_secret_settings,
-    ):
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
         return (
             init_settings,
             env_settings,
             dotenv_settings,
             FileSecretsSettingsSource(file_secret_settings),
         )
-
 ```
+<!-- docsub: end -->
+
+<!-- docsub: begin -->
+<!-- docsub: x cases tests/test_usage.py UsagePlain -->
+```pycon
+>>> Settings().model_dump()
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
+```
+
+<!-- docsub: end -->
+
 
 ## Nested secrets directory layout
 
 Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for files. In particular, this allows to use nested directory layout along with environmemt variables for other non-secret settings:
 
+
+<!-- docsub: begin -->
+<!-- docsub: x dirtree tests/test_usage.py:UsageNested.secrets_dir -->
+<!-- docsub: lines after 1 upto -1 -->
 ```text
-# /run/secrets/app_key
-secret1
-
-# /run/secrets/db/passwd
-secret2
+📂 secrets
+├── 📄 app_key
+└── 📂 db
+    └── 📄 passwd
 ```
+<!-- docsub: end -->
 
+<!-- docsub: begin -->
+<!-- docsub: exec sed -n '/ *model_config =/,/ *)/p' tests/usage/nested.py -->
+<!-- docsub: lines after 1 upto -1 -->
 ```python
-...
     model_config = SettingsConfigDict(
-        secrets_dir='/run/secrets',
+        secrets_dir='secrets',
         secrets_nested_subdir=True,
     )
-...
 ```
+<!-- docsub: end -->
+
+<!-- docsub: begin -->
+<!-- docsub: x cases tests/test_usage.py UsageNested -->
+```pycon
+>>> Settings().model_dump()
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
+```
+
+<!-- docsub: end -->
+
 
 ## Multiple `secrets_dir`
 
-When passing `list` to `secrets_dir`, last match wins.
 
-```python
-...
-    model_config = SettingsConfigDict(
-        secrets_dir=['/run/configs/', '/run/secrets'],
-    )
-...
+<!-- docsub: begin -->
+<!-- docsub: x dirtree tests/test_usage.py:UsageMultiple.secrets_dir -->
+<!-- docsub: lines after 1 upto -1 -->
+```text
+📂 secrets
+├── 📂 layer1
+│   └── 📄 app_key
+└── 📂 layer2
+    └── 📄 db__passwd
 ```
+<!-- docsub: end -->
+
+<!-- docsub: begin -->
+<!-- docsub: exec sed -n '/ *model_config =/,/ *)/p' tests/usage/multiple.py -->
+<!-- docsub: lines after 1 upto -1 -->
+```python
+    model_config = SettingsConfigDict(
+        secrets_dir=['secrets/layer1', 'secrets/layer2'],
+        secrets_nested_delimiter='__',
+    )
+```
+<!-- docsub: end -->
+
+<!-- docsub: begin -->
+<!-- docsub: x cases tests/test_usage.py UsageMultiple -->
+```pycon
+>>> Settings().model_dump()
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
+```
+
+<!-- docsub: end -->
+
+
+## Experimental syntactic sugar 🧪
+
+> [!CAUTION]
+> This syntax may change at any time. Pin current `pydantic-file-secrets` version if decided to use it.
+
+Few important things to note:
+
+- `@with_builtin_sources` decorator enables `NamedTuple` argument `src: BuiltinSources` encapsulating default builtins settings sources
+- `BaseSource` alias is shorter than `PydanticBaseSettingsSource` and is easier to use in type hints
+- `settings_cls` was removed from `settings_customise_sources` signature: `cls` seems to be sufficient
+
+<!-- docsub: begin -->
+<!-- docsub: include tests/usage/sugar.py -->
+<!-- docsub: lines after 1 upto -1 -->
+```python
+from pydantic import BaseModel, SecretStr
+from pydantic_file_secrets import (
+    BaseSource,
+    BuiltinSources,
+    FileSecretsSettingsSource,
+    SettingsConfigDict,
+    with_builtin_sources,
+)
+from pydantic_settings import BaseSettings
+
+
+class DbSettings(BaseModel):
+    passwd: SecretStr
+
+
+class Settings(BaseSettings):
+    app_key: SecretStr
+    db: DbSettings
+
+    model_config = SettingsConfigDict(
+        secrets_dir='secrets',
+        secrets_nested_delimiter='__',
+    )
+
+    @classmethod
+    @with_builtin_sources
+    def settings_customise_sources(cls, src: BuiltinSources) -> tuple[BaseSource, ...]:
+        return (
+            src.init_settings,
+            src.env_settings,
+            src.dotenv_settings,
+            FileSecretsSettingsSource(src.file_secret_settings),
+        )
+```
+<!-- docsub: end -->
+
+<!-- docsub: begin -->
+<!-- docsub: x cases tests/test_usage.py UsageSugar -->
+```pycon
+>>> Settings().model_dump()
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
+```
+
+<!-- docsub: end -->

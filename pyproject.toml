@@ -45,17 +45,19 @@ dynamic = ["version"]
 requires-python = ">=3.8"
 dependencies = [
   "pydantic-settings>=2.2,<3",
+  "typing_extensions>=4",
 ]
 
 [dependency-groups]
 dev = [
+  "bracex>=2.5 ; python_version >= '3.13'",
   "bump-my-version>=1.0 ; python_version >= '3.13'",
   "docsub>=0.9.0 ; python_version >= '3.13'",
   "genbadge[tests,coverage]>=1.1 ; python_version >= '3.13'",
-  "mypy>=1.15 ; python_version >= '3.13'",
+  "mypy>=1.0 ; python_version >= '3.13'",
   "ruff>=0.9 ; python_version >= '3.13'",
   "scriv>=1.5 ; python_version >= '3.13'",
-  "typing_extensions>=3",
+  "tabulate>=0.9.0",
 ]
 testing = [
   "dirlay>=0.4.0,<0.5.0",
@@ -96,12 +98,19 @@ incremental = false
 python_version = "3.9"
 strict = true
 exclude = [
-  "tests/",  # todo: include when fixing mypy errors
+  "docsubfile.py",  # todo: include docsubfile.py when typing bugs are fixed
 ]
 [[tool.mypy.overrides]]
 module = "tests.*"
 allow_incomplete_defs = true
 allow_untyped_defs = true
+disable_error_code = [
+  "call-arg",  # in BaseSettings() constructor all args are optional
+]
+[[tool.mypy.overrides]]
+module = "tests.usage.*"
+allow_incomplete_defs = false
+allow_untyped_defs = false
 
 # ruff
 
@@ -122,7 +131,7 @@ docstring-code-line-length = "dynamic"
 # scriv
 
 [tool.scriv]
-categories = ["Security ⚠️", "Breaking 🔥", "Removed 💨", "Deprecated ❄️", "Added 🌿", "Changed", "Fixed", "Docs", "Misc"]
+categories = ["Security ⚠️", "Breaking 🔥", "Removed 💨", "Deprecated ❄️", "Added 🌿", "Experimental 🧪", "Changed", "Fixed", "Docs", "Misc"]
 entry_title_template = "[{{ version }}](https://github.com/makukha/pydantic-file-secrets/releases/tag/v{{ version }}) — {{ date.strftime('%Y-%m-%d') }}"
 format = "md"
 fragment_directory = "NEWS.d"

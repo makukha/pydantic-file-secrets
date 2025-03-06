@@ -12,8 +12,10 @@ from enum import Enum
 from typing import Optional
 
 from dirlay import Dir
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 from pytest import mark
+
+from pydantic_file_secrets import SettingsConfigDict
 
 
 class SampleEnum(str, Enum):
@@ -26,7 +28,7 @@ class Settings(BaseSettings):
 
 
 @mark.parametrize(
-    'secrets_dir,conf,expected',
+    'secrets,conf,expected',
     (
         ({'some_str': ''}, dict(env_ignore_empty=True), {'some_str': ''}),
         ({'some_str': 'null'}, dict(env_parse_none_str='null'), {'some_str': 'null'}),
@@ -36,11 +38,11 @@ class Settings(BaseSettings):
         ({'some_str': 'value '}, dict(str_strip_whitespace=False), {'some_str': 'value'}),
     ),
 )  # fmt: skip
-def test_not_working(secrets_dir, conf, expected, tmp_path):
+def test_not_working(secrets, conf: SettingsConfigDict, expected, tmp_path):
     class MySettings(Settings):
         model_config = SettingsConfigDict(secrets_dir=tmp_path, **conf)
 
-    with Dir(secrets_dir).mktree(tmp_path):
+    with Dir(secrets).mktree(tmp_path):
         settings = MySettings()
         for k, v in expected.items():
             assert getattr(settings, k) == v

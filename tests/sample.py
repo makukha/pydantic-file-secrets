@@ -1,24 +1,14 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
-from pydantic_file_secrets import FileSecretsSettingsSource
-
-
-def settings_customise_sources(
-    cls,
-    settings_cls,
-    init_settings,
-    env_settings,
-    dotenv_settings,
-    file_secret_settings,
-) -> tuple:
-    return (
-        init_settings,
-        env_settings,
-        FileSecretsSettingsSource(file_secret_settings),
-    )
+from pydantic_file_secrets import (
+    BaseSource,
+    BuiltinSources,
+    FileSecretsSettingsSource,
+    with_builtin_sources,
+)
 
 
 class DbSettings(BaseModel):
@@ -27,6 +17,14 @@ class DbSettings(BaseModel):
 
 
 class AppSettings(BaseSettings):
-    settings_customise_sources = classmethod(settings_customise_sources)
-    db: DbSettings
     app_key: Optional[str] = None
+    db: DbSettings
+
+    @classmethod
+    @with_builtin_sources
+    def settings_customise_sources(cls, src: BuiltinSources) -> Tuple[BaseSource, ...]:
+        return (
+            src.init_settings,
+            src.env_settings,
+            FileSecretsSettingsSource(src.file_secret_settings),
+        )

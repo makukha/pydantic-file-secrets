@@ -1,6 +1,7 @@
 from dirlay import Dir
 from pytest import mark
 
+from pydantic_file_secrets import SettingsConfigDict
 from tests.sample import AppSettings
 
 
@@ -21,11 +22,11 @@ from tests.sample import AppSettings
         ),
     ),
 )
-def test_prefix(conf, secrets, monkeypatch, tmp_path):
+def test_prefix(conf: SettingsConfigDict, secrets, monkeypatch, tmp_path):
     monkeypatch.setenv('DB__USER', 'user')
 
     class Settings(AppSettings):
-        model_config = dict(
+        model_config = SettingsConfigDict(
             env_nested_delimiter='__',
             secrets_dir=tmp_path,
             **conf,

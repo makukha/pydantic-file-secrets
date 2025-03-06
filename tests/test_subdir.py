@@ -2,6 +2,7 @@ from dirlay import Dir
 from pydantic_settings.sources import SettingsError
 import pytest
 
+from pydantic_file_secrets import SettingsConfigDict
 from tests.sample import AppSettings
 
 
@@ -13,7 +14,7 @@ def test_subdir(monkeypatch, tmp_path):
     }
 
     class Settings(AppSettings):
-        model_config = dict(
+        model_config = SettingsConfigDict(
             secrets_dir=tmp_path,
             env_nested_delimiter='__',
             secrets_nested_subdir=True,
@@ -28,7 +29,7 @@ def test_subdir(monkeypatch, tmp_path):
 
 def test_invalid_options(tmp_path):
     class Settings(AppSettings):
-        model_config = dict(
+        model_config = SettingsConfigDict(
             secrets_dir=tmp_path,
             env_nested_delimiter='__',
             secrets_nested_subdir=True,

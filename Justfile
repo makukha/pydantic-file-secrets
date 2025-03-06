@@ -40,17 +40,19 @@ lint:
 
 [private]
 tox-provision:
-    docker compose run --rm -it tox run --notest --skip-pkg-install
+    time docker compose run --rm -it tox run --notest --skip-pkg-install
 
 # run tests
 [group('develop')]
 test *toxargs: build
     make tests/requirements.txt
-    {{ if toxargs == "" { "time just tox-provision " } else { "" } }}
+    rm -f .tox/*/.pass-*
+    {{ if toxargs == "" { "just tox-provision" } else { "" } }}
     time docker compose run --rm -it tox \
         {{ if toxargs == "" { "run-parallel" } else { "run" } }} \
          --installpkg="$(find dist -name '*.whl')" {{toxargs}}
     make badges
+    just docs
 
 # enter testing docker container
 [group('develop')]
