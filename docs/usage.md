@@ -14,22 +14,23 @@
 <!-- docsub: include tests/usage/plain.py -->
 <!-- docsub: lines after 1 upto -1 -->
 ```python
-from pydantic import BaseModel, Secret
+from pydantic import BaseModel, SecretStr
 from pydantic_file_secrets import FileSecretsSettingsSource, SettingsConfigDict
 from pydantic_settings import BaseSettings
 from pydantic_settings.sources import PydanticBaseSettingsSource
 
 
 class DbSettings(BaseModel):
-    passwd: Secret[str]
+    passwd: SecretStr
 
 
 class Settings(BaseSettings):
-    app_key: Secret[str]
+    app_key: SecretStr
     db: DbSettings
 
     model_config = SettingsConfigDict(
         secrets_dir='secrets',
+        secrets_nested_delimiter='__',
     )
 
     @classmethod
@@ -54,7 +55,7 @@ class Settings(BaseSettings):
 <!-- docsub: x cases tests/test_usage.py UsagePlain -->
 ```pycon
 >>> Settings().model_dump()
-{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
 ```
 
 <!-- docsub: end -->
@@ -91,7 +92,7 @@ Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for fi
 <!-- docsub: x cases tests/test_usage.py UsageNested -->
 ```pycon
 >>> Settings().model_dump()
-{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
 ```
 
 <!-- docsub: end -->
@@ -118,6 +119,7 @@ Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for fi
 ```python
     model_config = SettingsConfigDict(
         secrets_dir=['secrets/layer1', 'secrets/layer2'],
+        secrets_nested_delimiter='__',
     )
 ```
 <!-- docsub: end -->
@@ -126,28 +128,28 @@ Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for fi
 <!-- docsub: x cases tests/test_usage.py UsageMultiple -->
 ```pycon
 >>> Settings().model_dump()
-{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
 ```
 
 <!-- docsub: end -->
 
 
-## Syntactic sugar 🍰 — experimental 🧪
+## Experimental syntactic sugar 🧪
 
 > [!CAUTION]
-> This syntax may change on any release. Pin current `pydantic-file-secrets` version if decided to use it.
+> This syntax may change at any time. Pin current `pydantic-file-secrets` version if decided to use it.
 
 Few important things to note:
 
-- `@with_builtin_sources` decorator provides `NamedTuple` argument, sources names don't need to be copied anymore
+- `@with_builtin_sources` decorator enables `NamedTuple` argument `src: BuiltinSources` encapsulating default builtins settings sources
 - `BaseSource` alias is shorter than `PydanticBaseSettingsSource` and is easier to use in type hints
-- `settings_cls` was removed from `settings_customise_sources` signature, probably `cls` is sufficient
+- `settings_cls` was removed from `settings_customise_sources` signature: `cls` seems to be sufficient
 
 <!-- docsub: begin -->
 <!-- docsub: include tests/usage/sugar.py -->
 <!-- docsub: lines after 1 upto -1 -->
 ```python
-from pydantic import BaseModel, Secret
+from pydantic import BaseModel, SecretStr
 from pydantic_file_secrets import (
     BaseSource,
     BuiltinSources,
@@ -159,11 +161,11 @@ from pydantic_settings import BaseSettings
 
 
 class DbSettings(BaseModel):
-    passwd: Secret[str]
+    passwd: SecretStr
 
 
 class Settings(BaseSettings):
-    app_key: Secret[str]
+    app_key: SecretStr
     db: DbSettings
 
     model_config = SettingsConfigDict(
@@ -187,7 +189,7 @@ class Settings(BaseSettings):
 <!-- docsub: x cases tests/test_usage.py UsageSugar -->
 ```pycon
 >>> Settings().model_dump()
-{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
 ```
 
 <!-- docsub: end -->

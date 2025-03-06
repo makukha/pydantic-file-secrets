@@ -46,11 +46,13 @@ tox-provision:
 [group('develop')]
 test *toxargs: build
     make tests/requirements.txt
+    rm -f .tox/*/.pass-*
     {{ if toxargs == "" { "just tox-provision" } else { "" } }}
     time docker compose run --rm -it tox \
         {{ if toxargs == "" { "run-parallel" } else { "run" } }} \
          --installpkg="$(find dist -name '*.whl')" {{toxargs}}
     make badges
+    just docs
 
 # enter testing docker container
 [group('develop')]
