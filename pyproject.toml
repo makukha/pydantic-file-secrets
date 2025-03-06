@@ -71,7 +71,7 @@ testing = [
 # bump-my-version
 
 [tool.bumpversion]
-current_version = "0.4.1"
+current_version = "0.4.2"
 allow_dirty = true
 files = [
   {filename = ".copier-answers.yml"},
