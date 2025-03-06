@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pydantic-file-secrets"
-description = "Use file secrets in nested Pydantic Settings models, drop-in replacement for SecretsSettingsSource."
+description = "Use file secrets in nested pydantic-settings models instead of built-in SecretsSettingsSource"
 authors = [
   {name = "Michael Makukha", email = "m.makukha@gmail.com"},
 ]

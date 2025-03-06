@@ -1,7 +1,7 @@
 # pydantic-file-secrets 🔑
 <!-- docsub: begin -->
 <!-- docsub: exec yq '"> " + .project.description' pyproject.toml -->
-> Use file secrets in nested Pydantic Settings models, drop-in replacement for SecretsSettingsSource.
+> Use file secrets in nested pydantic-settings models instead of built-in SecretsSettingsSource
 <!-- docsub: end -->
 
 <!-- docsub: begin -->
