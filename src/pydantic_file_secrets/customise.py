@@ -1,19 +1,14 @@
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import Literal, NamedTuple, Optional, Tuple, Type, TypeVar
+from pathlib import Path
+from typing import NamedTuple, Tuple, Type, TypeVar, Union
 
-from pydantic_settings import BaseSettings, SettingsConfigDict as BaseSettingsConfigDict
+from pydantic_settings import BaseSettings
 from pydantic_settings.sources import PydanticBaseSettingsSource
 from typing_extensions import TypeAlias
 
 
-class SettingsConfigDict(BaseSettingsConfigDict, total=False):
-    secrets_dir_missing: Optional[Literal['ok', 'warn', 'error']]
-    secrets_dir_max_size: Optional[int]
-    secrets_case_sensitive: Optional[bool]
-    secrets_prefix: Optional[str]
-    secrets_nested_delimiter: Optional[str]
-    secrets_nested_subdir: Optional[bool]
+PathType: TypeAlias = Union[Path, str, Sequence[Union[Path, str]]]
 
 
 # settings customise sources: syntactic sugar

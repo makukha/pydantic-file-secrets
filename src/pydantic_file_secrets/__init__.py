@@ -15,12 +15,8 @@ from pydantic_settings.sources import PathType, SettingsError, parse_env_vars
 from pydantic_settings.utils import path_type_label
 
 from .__version__ import __version__ as __version__
-from .customise import (
-    BaseSource,
-    BuiltinSources,
-    SettingsConfigDict,
-    with_builtin_sources,
-)
+from .customise import BaseSource, BuiltinSources, with_builtin_sources
+from .types import SettingsConfigDict
 
 
 __all__ = [
@@ -115,10 +111,10 @@ class FileSecretsSettingsSource(EnvSettingsSource):
         # ensure valid secrets_path
         if self.secrets_dir is None:
             paths = []
-        elif isinstance(self.secrets_dir, list):
-            paths = self.secrets_dir
-        else:
+        elif isinstance(self.secrets_dir, (Path, str)):
             paths = [self.secrets_dir]
+        else:
+            paths = list(self.secrets_dir)
         self.secrets_paths: list[Path] = [Path(p).expanduser().resolve() for p in paths]
         for path in self.secrets_paths:
             self.validate_secrets_path(path)
