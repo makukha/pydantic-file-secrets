@@ -88,22 +88,23 @@ class Settings(BaseSettings):
 <!-- docsub: include tests/usage/plain.py -->
 <!-- docsub: lines after 1 upto -1 -->
 ```python
-from pydantic import BaseModel, Secret
+from pydantic import BaseModel, SecretStr
 from pydantic_file_secrets import FileSecretsSettingsSource, SettingsConfigDict
 from pydantic_settings import BaseSettings
 from pydantic_settings.sources import PydanticBaseSettingsSource
 
 
 class DbSettings(BaseModel):
-    passwd: Secret[str]
+    passwd: SecretStr
 
 
 class Settings(BaseSettings):
-    app_key: Secret[str]
+    app_key: SecretStr
     db: DbSettings
 
     model_config = SettingsConfigDict(
         secrets_dir='secrets',
+        secrets_nested_delimiter='__',
     )
 
     @classmethod
@@ -128,7 +129,7 @@ class Settings(BaseSettings):
 <!-- docsub: x cases tests/test_usage.py UsagePlain -->
 ```pycon
 >>> Settings().model_dump()
-{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
 ```
 
 <!-- docsub: end -->
@@ -165,7 +166,7 @@ Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for fi
 <!-- docsub: x cases tests/test_usage.py UsageNested -->
 ```pycon
 >>> Settings().model_dump()
-{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
 ```
 
 <!-- docsub: end -->
@@ -192,6 +193,7 @@ Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for fi
 ```python
     model_config = SettingsConfigDict(
         secrets_dir=['secrets/layer1', 'secrets/layer2'],
+        secrets_nested_delimiter='__',
     )
 ```
 <!-- docsub: end -->
@@ -200,28 +202,28 @@ Config option `secrets_nested_delimiter` overrides `env_nested_delimiter` for fi
 <!-- docsub: x cases tests/test_usage.py UsageMultiple -->
 ```pycon
 >>> Settings().model_dump()
-{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
 ```
 
 <!-- docsub: end -->
 
 
-## Syntactic sugar 🍰 — experimental 🧪
+## Experimental syntactic sugar 🧪
 
 > [!CAUTION]
-> This syntax may change on any release. Pin current `pydantic-file-secrets` version if decided to use it.
+> This syntax may change at any time. Pin current `pydantic-file-secrets` version if decided to use it.
 
 Few important things to note:
 
-- `@with_builtin_sources` decorator provides `NamedTuple` argument, sources names don't need to be copied anymore
+- `@with_builtin_sources` decorator enables `NamedTuple` argument `src: BuiltinSources` encapsulating default builtins settings sources
 - `BaseSource` alias is shorter than `PydanticBaseSettingsSource` and is easier to use in type hints
-- `settings_cls` was removed from `settings_customise_sources` signature, probably `cls` is sufficient
+- `settings_cls` was removed from `settings_customise_sources` signature: `cls` seems to be sufficient
 
 <!-- docsub: begin -->
 <!-- docsub: include tests/usage/sugar.py -->
 <!-- docsub: lines after 1 upto -1 -->
 ```python
-from pydantic import BaseModel, Secret
+from pydantic import BaseModel, SecretStr
 from pydantic_file_secrets import (
     BaseSource,
     BuiltinSources,
@@ -233,11 +235,11 @@ from pydantic_settings import BaseSettings
 
 
 class DbSettings(BaseModel):
-    passwd: Secret[str]
+    passwd: SecretStr
 
 
 class Settings(BaseSettings):
-    app_key: Secret[str]
+    app_key: SecretStr
     db: DbSettings
 
     model_config = SettingsConfigDict(
@@ -261,7 +263,7 @@ class Settings(BaseSettings):
 <!-- docsub: x cases tests/test_usage.py UsageSugar -->
 ```pycon
 >>> Settings().model_dump()
-{'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+{'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
 ```
 
 <!-- docsub: end -->
@@ -322,17 +324,32 @@ However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/ma
 
 # Testing
 
-100% test coverage [is provided](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/main/tox.ini) for latest stable Python release (3.13).
+100% test coverage is provided for latest Python and pydantic-settings version. Tests are run for all minor pydantic-settings v2 versions and all minor Python 3 versions supported by them:
 
-Tests are run for all minor Pydantic Settings v2 versions and all minor Python 3 versions supported by Pydantic Settings:
+* `pyXY` — Python 3.{8,9,10,11,12,13}
+* `psXY` — pydantic-settings v2.{2,3,4,5,6,7,8}
 
-* Python 3.{8,9,10,11,12,13}
-* pydantic-settings v2.{2,3,4,5,6,7,8}
+<!-- docsub: begin -->
+<!-- docsub: x testres -f'py3{8..13};ps2{2..8}' -i'{"fail":"❌","pytest":"☑️","mypy":"✅","pytest-cov":"✳️"}' .tox -->
+|       |  ps28  |  ps27  |  ps26  |  ps25  |  ps24  |  ps23  |  ps22  |
+|-------|--------|--------|--------|--------|--------|--------|--------|
+| py313 |   ✳️   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py312 |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py311 |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py310 |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py39  |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py38  |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+<!-- docsub: end -->
+
+- ✳️ pytest and mypy passing, coverage report generated
+- ✅ pytest and mypy passing
+- ☑️ pytest passing, mypy not attempted
+- ❌ tests failing or not attempted
 
 
 # History
 
-* September 2024 — Multiple `secrets_dir` [feature](https://github.com/pydantic/pydantic-settings/pull/372) was merged to [pydantic-settings v2.5.0](https://github.com/pydantic/pydantic-settings/releases/tag/v2.5.0)
+* September 2024 — [Multiple secrets_dir](https://github.com/pydantic/pydantic-settings/pull/372) feature was merged to [pydantic-settings v2.5.0](https://github.com/pydantic/pydantic-settings/releases/tag/v2.5.0)
 
 
 # Authors

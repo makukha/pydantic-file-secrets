@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Secret
+from pydantic import BaseModel, SecretStr
 from pydantic_file_secrets import (
     BaseSource,
     BuiltinSources,
@@ -10,11 +10,11 @@ from pydantic_settings import BaseSettings
 
 
 class DbSettings(BaseModel):
-    passwd: Secret[str]
+    passwd: SecretStr
 
 
 class Settings(BaseSettings):
-    app_key: Secret[str]
+    app_key: SecretStr
     db: DbSettings
 
     model_config = SettingsConfigDict(

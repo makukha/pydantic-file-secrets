@@ -30,7 +30,7 @@ class UsagePlain(SecretsManager, TestCase):
     Plain
 
     >>> Settings().model_dump()
-    {'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+    {'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
     """
 
     secrets_dir = Dir() | {
@@ -47,7 +47,7 @@ class UsageNested(SecretsManager, TestCase):
     Nested
 
     >>> Settings().model_dump()
-    {'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+    {'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
     """
 
     secrets_dir = Dir() | {
@@ -64,7 +64,7 @@ class UsageMultiple(SecretsManager, TestCase):
     Multiple
 
     >>> Settings().model_dump()
-    {'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+    {'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
     """
 
     secrets_dir = Dir() | {
@@ -81,7 +81,7 @@ class UsageSugar(SecretsManager, TestCase):
     Experimantal syntactic sugar
 
     >>> Settings().model_dump()
-    {'app_key': Secret('**********'), 'db': {'passwd': Secret('**********')}}
+    {'app_key': SecretStr('**********'), 'db': {'passwd': SecretStr('**********')}}
     """
 
     secrets_dir = UsagePlain.secrets_dir
