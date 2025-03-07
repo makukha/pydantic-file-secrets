@@ -32,7 +32,7 @@ sync:
 upgrade:
     uv sync --all-extras --all-groups --upgrade
     make requirements
-    copier update --defaults --trust --vcs-ref main
+    copier update --trust --vcs-ref main
 
 # run linters
 [group('develop')]
