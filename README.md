@@ -352,6 +352,13 @@ However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/ma
 * September 2024 — [Multiple secrets_dir](https://github.com/pydantic/pydantic-settings/pull/372) feature was merged to [pydantic-settings v2.5.0](https://github.com/pydantic/pydantic-settings/releases/tag/v2.5.0)
 
 
+# Contributing
+
+Pull requests, feature requests, and bug reports are welcome!
+
+* [Contribution guidelines](https://github.com/makukha/pydantic-file-secrets/blob/main/.github/CONTRIBUTING.md)
+
+
 # Authors
 
 * Michael Makukha
@@ -360,6 +367,9 @@ However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/ma
 # See also
 
 * [Documentation](https://github.com/makukha/pydantic-file-secrets#readme)
-* [Changelog](https://github.com/makukha/pydantic-file-secrets/tree/main/CHANGELOG.md)
 * [Issues](https://github.com/makukha/pydantic-file-secrets/issues)
-* [License](https://github.com/makukha/pydantic-file-secrets/tree/main/LICENSE)
+* [Changelog](https://github.com/makukha/pydantic-file-secrets/blob/main/CHANGELOG.md)
+* [Security Policy](https://github.com/makukha/pydantic-file-secrets/blob/main/.github/SECURITY.md)
+* [Contribution Guidelines](https://github.com/makukha/pydantic-file-secrets/blob/main/.github/CONTRIBUTING.md)
+* [Code of Conduct](https://github.com/makukha/pydantic-file-secrets/blob/main/.github/CODE_OF_CONDUCT.md)
+* [License](https://github.com/makukha/pydantic-file-secrets/blob/main/LICENSE)
