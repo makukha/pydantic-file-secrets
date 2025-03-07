@@ -10,18 +10,21 @@ default:
 # Develop
 #
 
+# run once on project creation
+[group('develop')]
+seed:
+    echo -e "#!/usr/bin/env bash\njust pre-commit" > .git/hooks/pre-commit
+
 # initialize dev environment
 [group('develop'), macos]
-init:
+pre:
     sudo port install gh git uv yq
-    echo -e "#!/usr/bin/env bash\njust pre-commit" > .git/hooks/pre-commit
-    chmod ug+x .git/hooks/*
-    just sync
 
 # synchronize dev environment
 [group('develop')]
 sync:
-    uv sync --all-extras --all-groups
+    chmod ug+x .git/hooks/*
+    uv sync --all-extras --all-groups --frozen
     make requirements
 
 # update dev environment
@@ -29,7 +32,7 @@ sync:
 upgrade:
     uv sync --all-extras --all-groups --upgrade
     make requirements
-    copier update --defaults --trust --vcs-ref main
+    copier update --trust --vcs-ref main
 
 # run linters
 [group('develop')]
