@@ -63,4 +63,4 @@ gh-repo-upd:
     new_topics="$(yq -r '.project.keywords | join(" ")' pyproject.toml)"
     gh repo edit $(sed 's/ / --add-topic /g' <<<" $new_topics")
     # provide community support
-    gh label create "code of conduct" --force -c red -d "Code of Conduct issues"
+    gh label create "code of conduct" --force -c D73A4A -d "Code of Conduct issues"
