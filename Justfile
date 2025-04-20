@@ -31,8 +31,7 @@ sync:
 [group('develop')]
 upgrade:
     uv sync --all-extras --all-groups --upgrade
-    make requirements
-    copier update --trust --vcs-ref main
+    uvx copier update --trust --vcs-ref main
 
 # run linters
 [group('develop')]
