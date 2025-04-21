@@ -1062,7 +1062,7 @@ dev = [
     { name = "tabulate", specifier = ">=0.9.0" },
 ]
 testing = [
-    { name = "coverage", marker = "python_full_version >= '3.13'", specifier = ">=7.8" },
+    { name = "coverage", marker = "python_full_version >= '3.13'", specifier = ">=7" },
     { name = "dirlay", specifier = ">=0.4.0,<0.5.0" },
     { name = "doctestcase", specifier = ">=0.2.2" },
     { name = "mypy", specifier = ">=1" },
