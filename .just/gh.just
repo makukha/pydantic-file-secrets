@@ -1,52 +1,49 @@
+mod git
+
+
+default:
+
+# get issue id of current GitHub branch
+[no-cd]
+issue-id:
+    @git branch --show-current | cut -d- -f1
+
+# get issue title of current GitHub branch
+[no-cd]
+issue-title:
+    @GH_PAGER=cat gh issue view "$(just gh::issue-id)" --json title -t '{{{{.title}}'
+
 # create GitHub pull request
-[group('github')]
-gh-create-pr:
-    just gh-push
-    gh pr create --web -t "$(just gh-issue-title)"
+[no-cd]
+pr-create:
+    #!/usr/bin/env sh
+    set -eu
+    just git::push
+    TITLE=
+    gh pr create --web -t "$(just gh::issue-title)"
 
 # create GitHub release
-[group('github')]
-gh-create-release:
-    #!/usr/bin/env bash
-    set -euo pipefail
+[no-cd]
+release-create tag:
+    #!/usr/bin/env sh
+    set -eu
     if [ "$(git branch --show-current)" != "main" ]; then
         echo "Can release from main branch only"
         exit 1
     fi
-    tag="v$(just version)"
-    git tag --force "$tag" HEAD
-    git push origin tag "$tag"
-    gh release create --draft -t "$tag — $(date -Idate)" --generate-notes "$tag"
-
-# get issue id of current GitHub branch
-[group('github')]
-gh-issue-id:
-    @git branch --show-current | cut -d- -f1
-
-# get issue title of current GitHub branch
-[group('github')]
-gh-issue-title:
-    @GH_PAGER=cat gh issue view "$(just gh-issue-id)" --json title -t '{{{{.title}}'
-
-# push all GitHub commits after ensuring the clean state
-[group('github')]
-gh-push:
-    # ensure clean state
-    git diff --exit-code
-    git diff --cached --exit-code
-    git ls-files --other --exclude-standard --directory
-    git push
+    git push origin tag "{{tag}}"
+    gh release create --draft -t "{{tag}} — $(date -Idate)" --generate-notes "{{tag}}"
 
 # get "org/name" of current GitHub repository
-[group('github')]
-gh-repo-name:
-    @git config --get remote.origin.url | sed 's|.*/\(.*/.*\)\.git$|\1|'
+[no-cd]
+repo-name:
+    @git config --get remote.origin.url | sed 's|.*/\(.*/.*\)\.git$|\1|
 
 # update GitHub repository metadata from pyproject.toml
-[group('github')]
-gh-repo-upd:
-    #!/usr/bin/env bash
-    set -euo pipefail
+[no-cd]
+repo-update:
+    #!/usr/bin/env sh
+    set -eu
     # update description
     gh repo edit -d "$(yq .project.description pyproject.toml)"
     # update homepage
@@ -55,7 +52,7 @@ gh-repo-upd:
       gh repo edit -h "$homepage"
     fi
     # delete old topics
-    old_topics="$(GH_PAGER=cat gh api repos/$(just gh-repo-name) | yq -r '.topics | join(" ")')"
+    old_topics="$(GH_PAGER=cat gh api repos/$(just gh::repo-name) | yq -r '.topics | join(" ")')"
     if [ -n "$old_topics" ]; then
       gh repo edit $(sed 's/ / --remove-topic /g' <<<" $old_topics")
     fi

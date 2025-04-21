@@ -7,7 +7,6 @@ from pydantic_settings import BaseSettings
 from pydantic_settings.sources import PydanticBaseSettingsSource
 from typing_extensions import TypeAlias
 
-
 PathType: TypeAlias = Union[Path, str, Sequence[Union[Path, str]]]
 
 

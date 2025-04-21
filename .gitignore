@@ -1,5 +1,4 @@
 _build/
-.coverage
 dist/
 *.pyc
 __pycache__/

@@ -17,8 +17,11 @@ You will need:
 - [uv](https://docs.astral.sh/uv/)
 - [Just](https://just.systems/man/en/)
 - [GNU make](https://www.gnu.org/software/make/make.html)
-- [Docker](https://www.docker.com)
+- [Docker](https://www.docker.com) or [Podman](https://podman.io)
 - [Git](https://git-scm.com)
+- [yq](https://mikefarah.gitbook.io/yq)
+
+If your OS is macOS or Linux, some of them will be installed by `just init`.
 
 ### Initialize dev environment
 
@@ -28,7 +31,7 @@ You will need:
 
     ```shell
     git clone https://github.com/<YOUR_USER_NAME>/pydantic-file-secrets.git
-    just sync
+    just init build
     ```
 
 ### Write code
@@ -71,15 +74,15 @@ There must be no errors.
 
     See `tox.ini` for details.
 
-### Build docs
+### Build package and docs
 
 ```shell
-just docs
+just build
 ```
 
 There must be no errors.
 
-### Add future changelog entry
+### Add changelog entry
 
 ```shell
 just news
