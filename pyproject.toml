@@ -60,24 +60,39 @@ dev = [
   "tabulate>=0.9.0",
 ]
 testing = [
+  "coverage>=7.8 ; python_version >= '3.13'",
   "dirlay>=0.4.0,<0.5.0",
   "doctestcase>=0.2.2",
   "mypy>=1",
   "pytest>=8",
-  "pytest-cov>=6 ; python_version >= '3.13'",
   "pytest-sugar>=1 ; python_version >= '3.13'",
 ]
 
 # bump-my-version
 
 [tool.bumpversion]
-current_version = "0.4.2"
 allow_dirty = true
+current_version = "0.4.2"
 files = [
   {filename = ".copier-answers.yml"},
   {filename = "docs/badges.md"},
   {filename = "src/pydantic_file_secrets/__version__.py"},
 ]
+tag = true
+
+# coverage
+
+[tool.coverage]
+paths.source = ["src/", "**/site-packages/"]
+run.branch = true
+run.data_file = ".tmp/.coverage"
+run.parallel = true
+run.relative_files = true
+run.source_pkgs = ["pydantic_file_secrets"]
+report.precision = 1
+report.skip_empty = true
+html.directory = ".tmp/htmlcov"
+xml.output = ".tmp/coverage.xml"
 
 # hatch
 
@@ -116,8 +131,19 @@ allow_untyped_defs = false
 
 [tool.ruff]
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "B", "S"]
+select = [
+  "B",       # flake8-bugbear
+  "E4",      # pycodestyle: Import
+  "E7",      # pycodestyle: Statement
+  "E9",      # pycodestyle: Runtime
+  "F",       # pyflakes
+  "I",       # isort
+  "RUF100",  # ruff: Unused `noqa` directive
+  "S",       # flake8-bandit
+]
 per-file-ignores."tests/**/*.py" = [
+  "B008",  # Do not perform function call in argument defaults
+  "I001",  # Import block is un-sorted or un-formatted
   "S101",  # Use of `assert` detected
   "S102",  # Use of `exec` detected
   "S108",  # Probable insecure usage of temporary file or directory

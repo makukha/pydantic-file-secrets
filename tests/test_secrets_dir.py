@@ -2,7 +2,6 @@ from typing import Optional, Tuple
 
 from dirlay import Dir
 from pydantic_settings import BaseSettings
-from pydantic_settings.sources import SettingsError
 import pytest
 from pytest import mark
 
@@ -12,6 +11,7 @@ from pydantic_file_secrets import (
     FileSecretsSettingsSource,
     SECRETS_DIR_MAX_SIZE,
     SettingsConfigDict,
+    SettingsError,
     with_builtin_sources,
 )
 

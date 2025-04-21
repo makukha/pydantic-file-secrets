@@ -16,8 +16,8 @@
 [![uses docsub](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/makukha/docsub/refs/heads/main/docs/badge/v1.json)](https://github.com/makukha/docsub)
 [![mypy](https://img.shields.io/badge/type_checked-mypy-%231674b1)](http://mypy.readthedocs.io)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/ruff)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/10108/badge)](https://www.bestpractices.dev/projects/10108)
+[![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![openssf best practices](https://www.bestpractices.dev/projects/10108/badge)](https://www.bestpractices.dev/projects/10108)
 <!-- docsub: end -->
 [![pypi downloads](https://img.shields.io/pypi/dw/pydantic-file-secrets)](https://pypistats.org/packages/pydantic-file-secrets)
 
@@ -331,15 +331,15 @@ However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/ma
 * `psXY` — pydantic-settings v2.{2,3,4,5,6,7,8}
 
 <!-- docsub: begin -->
-<!-- docsub: x testres -f'py3{8..13};ps2{2..8}' -i'{"fail":"❌","pytest":"☑️","mypy":"✅","pytest-cov":"✳️"}' .tox -->
-|       |  ps28  |  ps27  |  ps26  |  ps25  |  ps24  |  ps23  |  ps22  |
-|-------|--------|--------|--------|--------|--------|--------|--------|
-| py313 |   ✳️   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
-| py312 |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
-| py311 |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
-| py310 |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
-| py39  |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
-| py38  |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+<!-- docsub: x testres -f'py3{8..13};ps2{2..9}' -i'{"fail":"❌","pytest":"☑️","mypy":"✅","pytest-cov":"✳️"}' .tox -->
+|       |  ps29  |  ps28  |  ps27  |  ps26  |  ps25  |  ps24  |  ps23  |  ps22  |
+|-------|--------|--------|--------|--------|--------|--------|--------|--------|
+| py313 |   ✳️   |   ✳️   |   ✅   |   ✅   |   ✅   |   ☑️   |   ✳️   |   ☑️   |
+| py312 |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py311 |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py310 |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py39  |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py38  |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
 <!-- docsub: end -->
 
 - ✳️ pytest and mypy passing, coverage report generated

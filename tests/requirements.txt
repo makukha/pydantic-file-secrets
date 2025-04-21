@@ -3,7 +3,6 @@
 colorama==0.4.6 ; sys_platform == 'win32'
     # via pytest
 coverage==7.8.0 ; python_full_version >= '3.13'
-    # via pytest-cov
 dirlay==0.4.0
 doctestcase==0.2.2
 exceptiongroup==1.2.2 ; python_full_version < '3.11'
@@ -21,10 +20,7 @@ packaging==25.0
 pluggy==1.5.0
     # via pytest
 pytest==8.3.5
-    # via
-    #   pytest-cov
-    #   pytest-sugar
-pytest-cov==6.1.1 ; python_full_version >= '3.13'
+    # via pytest-sugar
 pytest-sugar==1.0.0 ; python_full_version >= '3.13'
 termcolor==3.0.1 ; python_full_version >= '3.13'
     # via pytest-sugar

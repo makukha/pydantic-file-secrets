@@ -1,8 +1,7 @@
 from dirlay import Dir
-from pydantic_settings.sources import SettingsError
 import pytest
 
-from pydantic_file_secrets import SettingsConfigDict
+from pydantic_file_secrets import SettingsConfigDict, SettingsError
 from tests.sample import AppSettings
 
 
