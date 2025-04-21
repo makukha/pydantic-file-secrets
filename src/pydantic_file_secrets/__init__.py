@@ -1,8 +1,8 @@
-from functools import reduce
 import os
+import warnings
+from functools import reduce
 from pathlib import Path
 from typing import Any, Dict, Literal, Optional, Union
-import warnings
 
 import pydantic_settings
 from pydantic_settings import (
@@ -11,13 +11,30 @@ from pydantic_settings import (
     PydanticBaseSettingsSource,
     SecretsSettingsSource,
 )
-from pydantic_settings.sources import PathType, SettingsError, parse_env_vars
+from pydantic_settings.sources import PathType
 from pydantic_settings.utils import path_type_label
+
+try:  # pydantic-settings >= 2.9
+    from pydantic_settings import (
+        SettingsError as SettingsError,
+    )
+except ImportError:  # pydantic-settings <= 2.3
+    from pydantic_settings.sources import (  # type: ignore[attr-defined,no-redef,unused-ignore]
+        SettingsError as SettingsError,
+    )
+
+try:  # pydantic-settings >= 2.9
+    from pydantic_settings.sources.utils import (  # type: ignore[import-not-found,unused-ignore]
+        parse_env_vars,
+    )
+except ImportError:  # pydantic-settings <= 2.8
+    from pydantic_settings.sources import (  # type: ignore[attr-defined,no-redef,unused-ignore]
+        parse_env_vars,
+    )
 
 from .__version__ import __version__ as __version__
 from .customise import BaseSource, BuiltinSources, with_builtin_sources
 from .types import SettingsConfigDict
-
 
 __all__ = [
     'BaseSource',

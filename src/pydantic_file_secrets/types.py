@@ -5,7 +5,6 @@ from typing import Literal, Optional, Union
 import pydantic_settings
 from typing_extensions import TypeAlias
 
-
 PathType: TypeAlias = Union[Path, str, Sequence[Union[Path, str]]]
 
 

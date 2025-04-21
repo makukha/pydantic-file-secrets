@@ -1,8 +1,7 @@
-from dataclasses import dataclass
 import json
-from pathlib import Path
 import re
-from tabulate import tabulate
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Self
 from unittest import TestCase
 
@@ -10,6 +9,7 @@ import bracex
 from docsub import click
 from doctestcase import to_markdown
 from importloc import Location, get_subclasses, random_name
+from tabulate import tabulate
 
 
 @click.group()
