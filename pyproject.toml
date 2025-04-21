@@ -60,7 +60,7 @@ dev = [
   "tabulate>=0.9.0",
 ]
 testing = [
-  "coverage>=7.8 ; python_version >= '3.13'",
+  "coverage>=7 ; python_version >= '3.13'",
   "dirlay>=0.4.0,<0.5.0",
   "doctestcase>=0.2.2",
   "mypy>=1",
