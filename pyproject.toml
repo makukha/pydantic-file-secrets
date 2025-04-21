@@ -72,7 +72,7 @@ testing = [
 
 [tool.bumpversion]
 allow_dirty = true
-current_version = "0.4.2"
+current_version = "0.4.3"
 files = [
   {filename = ".copier-answers.yml"},
   {filename = "docs/badges.md"},
