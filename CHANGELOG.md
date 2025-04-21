@@ -10,6 +10,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.4.3'></a>
+## [0.4.3](https://github.com/makukha/pydantic-file-secrets/releases/tag/v0.4.3) — 2025-04-21
+
+***Added 🌿***
+
+- Support and tests for `pydantic-settings>=2.9`
+
+***Misc***
+
+- Synchronized with [makukha/copython](https://github.com/makukha/copython) project template
+
 <a id='changelog-0.4.2'></a>
 ## [0.4.2](https://github.com/makukha/pydantic-file-secrets/releases/tag/v0.4.2) — 2025-03-06
 
@@ -48,7 +59,3 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Started using [docsub](https://github.com/makukha/docsub)
 
 - Started using [just](https://just.systems)
-
-## Prior releases
-
-- See [GitHub release notes](https://github.com/makukha/pydantic-file-secrets/releases)

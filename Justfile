@@ -144,8 +144,8 @@ merge:
 # release
 [group('2-manage')]
 release:
-    just pre-merge
     just version-bump
+    just pre-merge
     just changelog-collect
     make sources
     @echo "Manually>>> Proofread the changelog and commit changes ..."
