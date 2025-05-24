@@ -10,6 +10,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.4.4'></a>
+## [0.4.4](https://github.com/makukha/pydantic-file-secrets/releases/tag/v0.4.4) — 2025-05-24
+
+***Added 🌿***
+
+- Symbolic links to directories are now followed, thanks to [@Bengreen](https://github.com/Bengreen)
+
 <a id='changelog-0.4.3'></a>
 ## [0.4.3](https://github.com/makukha/pydantic-file-secrets/releases/tag/v0.4.3) — 2025-04-21
 

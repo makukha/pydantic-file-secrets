@@ -82,7 +82,8 @@ def testres(toxdir: Path, fragments: str, icons: str) -> None:
     Print matrix of tox test results.
     """
     if not toxdir.exists():
-        raise ValueError('Test results are not available.')
+        return
+
     fgroup = [list(reversed(bracex.expand(g))) for g in fragments.split(';')]
     if len(fgroup) > 2:
         raise ValueError('Maximum 2 fragments are allowed')
