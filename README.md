@@ -8,10 +8,10 @@
 <!-- docsub: begin -->
 <!-- docsub: include docs/badges.md -->
 [![license](https://img.shields.io/github/license/makukha/pydantic-file-secrets.svg)](https://github.com/makukha/pydantic-file-secrets/blob/main/LICENSE)
-[![pypi](https://img.shields.io/pypi/v/pydantic-file-secrets.svg#v0.4.3)](https://pypi.org/project/pydantic-file-secrets)
+[![pypi](https://img.shields.io/pypi/v/pydantic-file-secrets.svg#v0.4.4)](https://pypi.org/project/pydantic-file-secrets)
 [![python versions](https://img.shields.io/pypi/pyversions/pydantic-file-secrets.svg)](https://pypi.org/project/pydantic-file-secrets)
-[![tests](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/v0.4.3/docs/img/badge/tests.svg)](https://github.com/makukha/pydantic-file-secrets)
-[![coverage](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/v0.4.3/docs/img/badge/coverage.svg)](https://github.com/makukha/pydantic-file-secrets)
+[![tests](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/v0.4.4/docs/img/badge/tests.svg)](https://github.com/makukha/pydantic-file-secrets)
+[![coverage](https://raw.githubusercontent.com/makukha/pydantic-file-secrets/v0.4.4/docs/img/badge/coverage.svg)](https://github.com/makukha/pydantic-file-secrets)
 [![tested with multipython](https://img.shields.io/badge/tested_with-multipython-x)](https://github.com/makukha/multipython)
 [![uses docsub](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/makukha/docsub/refs/heads/main/docs/badge/v1.json)](https://github.com/makukha/docsub)
 [![mypy](https://img.shields.io/badge/type_checked-mypy-%231674b1)](http://mypy.readthedocs.io)
