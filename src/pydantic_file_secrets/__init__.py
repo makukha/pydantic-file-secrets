@@ -3,6 +3,7 @@ import warnings
 from functools import reduce
 from pathlib import Path
 from typing import Any, Dict, Literal, Optional, Union
+from glob import glob
 
 import pydantic_settings
 from pydantic_settings import (
@@ -197,7 +198,7 @@ class FileSecretsSettingsSource(EnvSettingsSource):
     def load_secrets(path: Path) -> Dict[str, str]:
         return {
             str(p.relative_to(path)): p.read_text().strip()
-            for p in path.glob('**/*')
+            for p in [Path(p_glob) for p_glob in glob(f'{path}/**/*', recursive=True)]
             if p.is_file()
         }
 
