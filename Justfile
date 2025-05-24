@@ -9,17 +9,13 @@ default:
     @just --list
 
 #
-# --- Seed ---
+# --- Develop ---
 #
 
 # run once on project creation
-[group('0-seed')]
+[group('1-develop')]
 seed:
     echo -e "#!/usr/bin/env sh\njust pre-commit" > .git/hooks/pre-commit
-
-#
-# --- Develop ---
-#
 
 # init dev environment
 [group('1-develop')]
@@ -56,10 +52,10 @@ upgrade:
 
 # run linters
 [group('1-develop')]
-lint:
-    uv run mypy .
-    uv run ruff check
-    uv run ruff format --diff
+lint *files:
+    uv run mypy {{ if files == '' { '.' } else { files } }}
+    uv run ruff check {{files}}
+    uv run ruff format --diff {{files}}
 
 # run tests
 [group('1-develop')]
@@ -150,9 +146,11 @@ release:
     make sources
     @echo "Manually>>> Proofread the changelog and commit changes ..."
     @printf "Done? " && read _
+    git tag "v$(uv run bump-my-version show current_version)"
+    git push --tags
     just merge
     just gh::repo-update
     @echo "Manually>>> Update GitHub release notes and publish release ..."
-    just gh::release-create $(uv run bump-my-version show current_tag)
+    just gh::release-create "v$(uv run bump-my-version show current_version)"
     @printf "Done? " && read _
     just pypi-publish

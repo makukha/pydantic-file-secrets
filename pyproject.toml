@@ -78,7 +78,6 @@ files = [
   {filename = "docs/badges.md"},
   {filename = "src/pydantic_file_secrets/__version__.py"},
 ]
-tag = true
 
 # coverage
 

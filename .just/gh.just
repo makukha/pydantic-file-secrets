@@ -37,12 +37,12 @@ release-create tag:
 # get "org/name" of current GitHub repository
 [no-cd]
 repo-name:
-    @git config --get remote.origin.url | sed 's|.*/\(.*/.*\)\.git$|\1|
+    @git config --get remote.origin.url | sed 's|.*/\(.*/.*\)\.git$|\1|'
 
 # update GitHub repository metadata from pyproject.toml
 [no-cd]
 repo-update:
-    #!/usr/bin/env sh
+    #!/usr/bin/env bash
     set -eu
     # update description
     gh repo edit -d "$(yq .project.description pyproject.toml)"
