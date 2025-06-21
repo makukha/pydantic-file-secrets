@@ -328,18 +328,18 @@ However, we [make sure](https://github.com/makukha/pydantic-file-secrets/blob/ma
 100% test coverage is provided for latest Python and pydantic-settings version. Tests are run for all minor pydantic-settings v2 versions and all minor Python 3 versions supported by them:
 
 * `pyXY` — Python 3.{8,9,10,11,12,13}
-* `psXY` — pydantic-settings v2.{2,3,4,5,6,7,8}
+* `psXY` — pydantic-settings v2.{2,3,4,5,6,7,8,9,10}
 
 <!-- docsub: begin -->
-<!-- docsub: x testres -f'py3{8..13};ps2{2..9}' -i'{"fail":"❌","pytest":"☑️","mypy":"✅","pytest-cov":"✳️"}' .tox -->
-|       |  ps29  |  ps28  |  ps27  |  ps26  |  ps25  |  ps24  |  ps23  |  ps22  |
-|-------|--------|--------|--------|--------|--------|--------|--------|--------|
-| py313 |   ✳️   |   ✳️   |   ✅   |   ✅   |   ✅   |   ☑️   |   ✳️   |   ☑️   |
-| py312 |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
-| py311 |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
-| py310 |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
-| py39  |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
-| py38  |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+<!-- docsub: x testres -f'py3{8..13};ps2{2..10}' -i'{"fail":"❌","pytest":"☑️","mypy":"✅","pytest-cov":"✳️"}' .tox -->
+|       |  ps210  |  ps29  |  ps28  |  ps27  |  ps26  |  ps25  |  ps24  |  ps23  |  ps22  |
+|-------|---------|--------|--------|--------|--------|--------|--------|--------|--------|
+| py313 |   ✳️    |   ✅   |   ✳️   |   ✅   |   ✅   |   ✅   |   ☑️   |   ✳️   |   ☑️   |
+| py312 |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py311 |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py310 |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py39  |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
+| py38  |   ✅    |   ✅   |   ✅   |   ✅   |   ✅   |   ✅   |   ☑️   |   ☑️   |   ☑️   |
 <!-- docsub: end -->
 
 - ✳️ pytest and mypy passing, coverage report generated
